@@ -1,1224 +1,507 @@
 import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { zine } from '../content.js'
-import { Reveal, SplitLines, Arrow, EASE } from './motion.jsx'
+import { Reveal, SplitLines, Arrow } from './motion.jsx'
 import { useBooking } from '../booking.jsx'
-import { assetUrl } from '../assetUrl.js'
 import './Zine.css'
 
-// Default sample data for interactive fill-in-the-blanks
-const DEFAULT_FIELDS = {
-  bookTopic: '달빛과 취기',
-  authorName: '밤의 방랑자',
-  originCity: '익산',
-  dayJob: '기획자',
-  myState: '조금은 헐렁하고 다정한 사람',
-  weatherTemp: '18℃ 선선함',
-  bgmTrack: '빛과 소금 - 내 곁에서 떠나가지 말아요',
-  sentence: '나무는 썩어도 그 위에 새겨진 문장은 시간을 건넌다.',
-  sceneAt4pm: '동문길 모퉁이 헌책방 처마 밑으로 스며드는 주황빛 햇살',
-  myPungryu: '좋은 사람과 기울이는 다정한 술 한잔',
-  favoriteDish: '동문길 수제 맥적구이',
-  favoriteDrink: '알싸한 배와 생강 향의 전주 이강주 25°',
-  // 4-axis taste star ratings (1~5 stars)
-  sweetness: 2,
-  acidity: 3,
-  body: 4,
-  finish: 5,
-  tastingNote: '차갑던 동문길 골목 끝에서 만난 온기. 낯선 이들과 잔을 부딪히며 웃음이 번졌다.',
-  warmWords: '수고했어, 오늘 밤은 오롯이 너만의 시간이야.',
-  bookTitle: '밤은 이야기하기에 좋은 시간',
-  manuscriptText: '영업이 끝난 서가에서 우리는 저마다의 문장에 밑줄을 긋는다.',
-  postcardTo: '계절이 바뀐 날의 나에게',
-  postcardAddress: '전북 전주시 완산구 동문길 42',
-  postcardMessage: '안녕, 그곳의 계절은 어떤가요? 전주 동문길에서 마셨던 술과 책방의 종이 냄새를 기억하나요. 바쁠 때마다 이 날의 밤공기를 꺼내어 보길 바랍니다.',
+// 4-axis Star Rating Component (1~5 stars)
+function StarRating({ label, value = 3, onChange }) {
+  return (
+    <div className="zine-star-rating" role="group" aria-label={label}>
+      <span className="zine-star-rating__label">• {label} :</span>
+      <div className="zine-star-rating__stars">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            className={`zine-star-btn ${star <= value ? 'zine-star-btn--filled' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation()
+              onChange(star)
+            }}
+            aria-label={`${label} ${star}점`}
+          >
+            ★
+          </button>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export default function Zine() {
   const { openBooking } = useBooking()
-  const prefersReduced = useReducedMotion()
 
-  // State
+  // View Mode: 'accordion' (3D folded) | 'flat' (flat strip)
+  const [viewMode, setViewMode] = useState('accordion')
   const [activePageIndex, setActivePageIndex] = useState(0)
-  const [viewMode, setViewMode] = useState('accordion') // 'accordion' | 'flat' | 'focus'
-  const [foldAngle, setFoldAngle] = useState(14) // degrees in accordion mode
-  const [fields, setFields] = useState(DEFAULT_FIELDS)
-  const [isMobile, setIsMobile] = useState(false)
 
-  const mobileScrollRef = useRef(null)
+  // 4-axis taste ratings
+  const [ratings, setRatings] = useState({
+    sweetness: 3,
+    acidity: 4,
+    body: 4,
+    finish: 5,
+  })
 
-  // Detect mobile screen (<820px)
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 820)
+  const stripRef = useRef(null)
+
+  const updateRating = (axis, score) => {
+    setRatings((prev) => ({ ...prev, [axis]: score }))
+  }
+
+  // Smooth scroll strip horizontally on desktop/mobile
+  const scrollToPage = (index) => {
+    setActivePageIndex(index)
+    if (stripRef.current) {
+      const pageEl = stripRef.current.children[index]
+      if (pageEl) {
+        pageEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+      }
     }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  }
 
-  // Mobile scroll listener to update active page index
+  const handlePrev = () => {
+    const nextIdx = Math.max(0, activePageIndex - 1)
+    scrollToPage(nextIdx)
+  }
+
+  const handleNext = () => {
+    const nextIdx = Math.min(7, activePageIndex + 1)
+    scrollToPage(nextIdx)
+  }
+
+  // Track active page on mobile / horizontal scroll
   useEffect(() => {
-    if (!isMobile) return
-    const el = mobileScrollRef.current
+    const el = stripRef.current
     if (!el) return
 
-    const handleScroll = () => {
+    const onScroll = () => {
       const scrollLeft = el.scrollLeft
-      const cardWidth = el.querySelector('.zine__page-card')?.offsetWidth || 280
-      const newIndex = Math.round(scrollLeft / (cardWidth + 14))
-      if (newIndex >= 0 && newIndex < zine.pages.length && newIndex !== activePageIndex) {
-        setActivePageIndex(newIndex)
-      }
+      const pageWidth = 240
+      const idx = Math.min(7, Math.max(0, Math.round(scrollLeft / pageWidth)))
+      setActivePageIndex(idx)
     }
 
-    el.addEventListener('scroll', handleScroll, { passive: true })
-    return () => el.removeEventListener('scroll', handleScroll)
-  }, [isMobile, activePageIndex])
-
-  // Scroll to active index on mobile when changed via pill
-  const scrollToMobilePage = (index) => {
-    setActivePageIndex(index)
-    if (mobileScrollRef.current) {
-      const cards = mobileScrollRef.current.querySelectorAll('.zine__page-card')
-      if (cards[index]) {
-        cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
-      }
-    }
-  }
-
-  // Handle field change
-  const updateField = (key, value) => {
-    setFields((prev) => ({ ...prev, [key]: value }))
-  }
-
-  // Reset fields to defaults
-  const resetFields = () => {
-    setFields(DEFAULT_FIELDS)
-  }
-
-  // Toggle fold animation
-  const handleToggleFold = () => {
-    if (viewMode !== 'accordion') {
-      setViewMode('accordion')
-      setFoldAngle(14)
-      return
-    }
-    setFoldAngle((prev) => (prev > 4 ? 0 : 16))
-  }
-
-  // Title lines for SplitLines
-  const titleLines = ['《전주 풍류록》 초판 1쇄,', '저자는 당신입니다']
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <section id="zine" className="section zine-section">
+    <section id="zine" className="section zine-section" aria-labelledby="zine-title">
       <div className="container zine__container">
-        {/* Header */}
+        {/* Section Header */}
         <header className="zine__header">
-          <Reveal delay={0.05} y={20}>
-            <div className="eyebrow zine__eyebrow">{zine.eyebrow}</div>
+          <Reveal>
+            <span className="eyebrow zine__eyebrow">{zine.eyebrow}</span>
           </Reveal>
-
-          <SplitLines
-            lines={titleLines}
-            as="h2"
-            className="zine__title h1"
-            lineClassName="zine__title-line"
-            delay={0.15}
-          />
-
-          <Reveal delay={0.25} y={24}>
-            <p className="zine__lead lead">{zine.body}</p>
-          </Reveal>
-
-          {/* Interactive Controller Bar (Desktop) - No Emoticons */}
-          <Reveal delay={0.35} y={20} className="zine__control-bar-wrapper">
-            <div className="zine__controls glass">
-              <div className="zine__mode-toggles" role="tablist" aria-label="책 보기 모드">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={viewMode === 'accordion'}
-                  className={`zine__mode-btn ${viewMode === 'accordion' ? 'is-active' : ''}`}
-                  onClick={() => setViewMode('accordion')}
-                >
-                  병풍 입체 (3D)
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={viewMode === 'flat'}
-                  className={`zine__mode-btn ${viewMode === 'flat' ? 'is-active' : ''}`}
-                  onClick={() => setViewMode('flat')}
-                >
-                  전면 펼쳐보기 (Spread)
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={viewMode === 'focus'}
-                  className={`zine__mode-btn ${viewMode === 'focus' ? 'is-active' : ''}`}
-                  onClick={() => setViewMode('focus')}
-                >
-                  면별 자세히 보기 (Focus)
-                </button>
-              </div>
-
-              {viewMode === 'accordion' && !isMobile && (
-                <div className="zine__fold-slider-wrap">
-                  <label htmlFor="zine-fold-range" className="zine__fold-label">
-                    접힘 각도 <span className="zine__fold-value">{foldAngle}°</span>
-                  </label>
-                  <input
-                    id="zine-fold-range"
-                    type="range"
-                    min="0"
-                    max="22"
-                    step="1"
-                    value={foldAngle}
-                    onChange={(e) => setFoldAngle(Number(e.target.value))}
-                    className="zine__range-input"
-                    aria-label="병풍 접힘 각도 조절"
-                  />
-                  <button
-                    type="button"
-                    className="zine__fold-toggle-btn"
-                    onClick={handleToggleFold}
-                    title="병풍 펴기/접기 토글"
-                  >
-                    {foldAngle > 4 ? '완전 펴기' : '입체로 접기'}
-                  </button>
-                </div>
-              )}
-
-              <button
-                type="button"
-                className="zine__reset-btn"
-                onClick={resetFields}
-                title="기본 샘플 문장으로 채우기"
-              >
-                예시 문장 초기화
-              </button>
-            </div>
-          </Reveal>
-
-          {/* Quick Page Nav Pills (8 Pages) */}
-          <Reveal delay={0.4} y={16}>
-            <nav className="zine__nav-pills" aria-label="책 페이지 빠른 이동">
-              {zine.pages.map((p, idx) => (
-                <button
-                  key={p.no}
-                  type="button"
-                  className={`zine__nav-pill ${activePageIndex === idx ? 'is-active' : ''}`}
-                  onClick={() => {
-                    if (isMobile) {
-                      scrollToMobilePage(idx)
-                    } else {
-                      setActivePageIndex(idx)
-                    }
-                  }}
-                  data-tone={p.tone}
-                >
-                  <span className="zine__pill-no">0{p.no}</span>
-                  <span className="zine__pill-label">{p.label}</span>
-                </button>
-              ))}
-            </nav>
+          <h2 id="zine-title" className="zine__title">
+            <SplitLines text={zine.title} />
+          </h2>
+          <Reveal delay={0.15}>
+            <p className="zine__lead">{zine.body}</p>
           </Reveal>
         </header>
 
-        {/* ── Book Display Stage ── */}
-        <div className="zine__stage-wrapper">
-          {/* Floating decorative elements */}
-          <div className="zine__decorations" aria-hidden="true">
-            <motion.div
-              className="zine__decor-polaroid zine__decor-polaroid--table"
-              animate={prefersReduced ? {} : { y: [0, -8, 0], rotate: [-4, -3, -4] }}
-              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+        {/* View Mode & Navigation Controls (No Emojis) */}
+        <div className="zine__controls-bar">
+          <div className="zine__mode-toggles" role="tablist" aria-label="병풍 관람 모드">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={viewMode === 'accordion'}
+              className={`zine__mode-btn ${viewMode === 'accordion' ? 'zine__mode-btn--active' : ''}`}
+              onClick={() => setViewMode('accordion')}
             >
-              <div className="zine__washi-tape zine__washi-tape--top-center" />
-              <div className="zine__polaroid-img-wrap">
-                <img
-                  src={assetUrl('images/zine-table.jpg')}
-                  alt="에이커북스토어 집필 테이블"
-                  loading="lazy"
-                  width="180"
-                  height="135"
-                />
-              </div>
-              <p className="zine__polaroid-caption">에이커 심야 살롱 테이블 19:30</p>
-            </motion.div>
-
-            <motion.div
-              className="zine__decor-polaroid zine__decor-polaroid--woodblock"
-              animate={prefersReduced ? {} : { y: [0, 8, 0], rotate: [5, 6, 5] }}
-              transition={{ duration: 8.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              3D 병풍 접힘
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={viewMode === 'flat'}
+              className={`zine__mode-btn ${viewMode === 'flat' ? 'zine__mode-btn--active' : ''}`}
+              onClick={() => setViewMode('flat')}
             >
-              <div className="zine__washi-tape zine__washi-tape--mint" />
-              <div className="zine__polaroid-img-wrap">
-                <img
-                  src={assetUrl('images/woodblock.jpg')}
-                  alt="완판본 목판 인출"
-                  loading="lazy"
-                  width="150"
-                  height="150"
-                />
-              </div>
-              <p className="zine__polaroid-caption">완판본 목판의 결</p>
-            </motion.div>
-
-            <motion.div
-              className="zine__decor-seal"
-              animate={prefersReduced ? {} : { rotate: [-8, -6, -8], scale: [1, 1.03, 1] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <div className="zine__seal-box">
-                <span className="zine__seal-char">全州</span>
-                <span className="zine__seal-sub">風流</span>
-              </div>
-            </motion.div>
+              전체 펼쳐보기
+            </button>
           </div>
 
-          {/* Mobile View: Touch-Friendly Scroll Snap Gallery */}
-          {isMobile ? (
-            <div className="zine__mobile-stage">
-              <div className="zine__mobile-gallery" ref={mobileScrollRef}>
-                {zine.pages.map((page, idx) => (
-                  <div
-                    key={page.no}
-                    className={`zine__page-card ${page.isPostcard ? 'zine__page-card--postcard' : 'zine__page-card--standard'} ${
-                      activePageIndex === idx ? 'is-focused' : ''
-                    }`}
-                    data-tone={page.tone}
-                    onClick={() => setActivePageIndex(idx)}
-                  >
-                    <div className="zine__card-crease-shadow zine__card-crease-shadow--left" />
-                    <div className="zine__card-inner">
-                      <PageRenderer
-                        page={page}
-                        index={idx}
-                        fields={fields}
-                        updateField={updateField}
-                      />
-                    </div>
-                    <div className="zine__card-crease-shadow zine__card-crease-shadow--right" />
-                  </div>
-                ))}
-              </div>
+          <div className="zine__page-nav">
+            <button
+              type="button"
+              className="zine__nav-arrow-btn"
+              onClick={handlePrev}
+              disabled={activePageIndex === 0}
+              aria-label="이전 면 보기"
+            >
+              ‹
+            </button>
+            <span className="zine__page-indicator">
+              {activePageIndex + 1} / 8면
+            </span>
+            <button
+              type="button"
+              className="zine__nav-arrow-btn"
+              onClick={handleNext}
+              disabled={activePageIndex === 7}
+              aria-label="다음 면 보기"
+            >
+              ›
+            </button>
+          </div>
+        </div>
 
-              {/* Mobile Indicator, Dots & Counter */}
-              <div className="zine__mobile-counter-wrap">
-                <div className="zine__mobile-dots">
-                  {zine.pages.map((p, idx) => (
-                    <button
-                      key={p.no}
-                      type="button"
-                      className={`zine__mobile-dot ${activePageIndex === idx ? 'is-active' : ''}`}
-                      onClick={() => scrollToMobilePage(idx)}
-                      aria-label={`${p.label} 페이지로 이동`}
-                    />
-                  ))}
+        {/* Accordion Book Stage: Strict 8-Panel Strip (240px × 360px per page) */}
+        <div className={`zine__stage-wrapper zine__stage-wrapper--${viewMode}`}>
+          <div
+            ref={stripRef}
+            className={`zine__accordion-strip zine__accordion-strip--${viewMode}`}
+            style={{ '--active-idx': activePageIndex }}
+          >
+            {/* ── [1면] 표지 (Clear / 선명) ── */}
+            <div
+              className={`zine-page zine-page--1 ${activePageIndex === 0 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(0)}
+            >
+              <div className="inner-frame">
+                <div className="page-head-row">
+                  <span className="hanja-top-tag">完板本 現代新刊</span>
+                  <div className="stamp stamp--red">全州<br />風流</div>
                 </div>
 
-                <div className="zine__mobile-counter">
-                  <button
-                    type="button"
-                    className="zine__counter-arrow-btn"
-                    disabled={activePageIndex === 0}
-                    onClick={() => scrollToMobilePage(Math.max(0, activePageIndex - 1))}
-                    aria-label="이전 페이지"
-                  >
-                    ‹
-                  </button>
-                  <span className="zine__counter-current">0{activePageIndex + 1}</span>
-                  <span className="zine__counter-sep">/</span>
-                  <span className="zine__counter-total">0{zine.pages.length}</span>
-                  <span className="zine__counter-title">
-                    {zine.pages[activePageIndex]?.label} · {zine.pages[activePageIndex]?.title}
-                  </span>
-                  <button
-                    type="button"
-                    className="zine__counter-arrow-btn"
-                    disabled={activePageIndex === zine.pages.length - 1}
-                    onClick={() => scrollToMobilePage(Math.min(zine.pages.length - 1, activePageIndex + 1))}
-                    aria-label="다음 페이지"
-                  >
-                    ›
-                  </button>
+                <div className="cover-title-box">
+                  <div className="cover-sub-prompt">[ 달빛과 취기 ]을 찾아 떠난</div>
+                  <div className="cover-main-title">전주 심야 풍류록</div>
+                  <div className="cover-hanja-sub">全 州 深 夜 風 流 錄</div>
+                </div>
+
+                <div className="vertical-sub">어느 해 질 녘의 미식과 심야 서점의 기록</div>
+
+                <div className="cover-footer">
+                  <div>발행일 : 2026년 10월 24일</div>
+                  <div style={{ marginTop: '3px' }}>지은이 : 밤의 방랑자 (인)</div>
                 </div>
               </div>
+              <div className="page-num">- 01 (표지) -</div>
             </div>
-          ) : (
-            /* Desktop Stage */
-            <div className={`zine__desktop-stage zine__desktop-stage--${viewMode}`}>
-              {viewMode === 'focus' ? (
-                /* Focus Mode: Prominent detailed card view with pagination */
-                <div className="zine__focus-view">
-                  <div className="zine__focus-nav-bar">
-                    <button
-                      type="button"
-                      className="zine__focus-nav-btn"
-                      disabled={activePageIndex === 0}
-                      onClick={() => setActivePageIndex((prev) => Math.max(0, prev - 1))}
-                      aria-label="이전 페이지"
-                    >
-                      ← 이전 면
-                    </button>
-                    <div className="zine__focus-page-title">
-                      <span className="zine__focus-badge" data-tone={zine.pages[activePageIndex].tone}>
-                        {zine.pages[activePageIndex].no}면
-                      </span>
-                      <h3>
-                        {zine.pages[activePageIndex].label} — {zine.pages[activePageIndex].title}
-                      </h3>
-                    </div>
-                    <button
-                      type="button"
-                      className="zine__focus-nav-btn"
-                      disabled={activePageIndex === zine.pages.length - 1}
-                      onClick={() => setActivePageIndex((prev) => Math.min(zine.pages.length - 1, prev + 1))}
-                      aria-label="다음 페이지"
-                    >
-                      다음 면 →
-                    </button>
-                  </div>
 
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activePageIndex}
-                      className={`zine__page-card zine__page-card--focus ${
-                        zine.pages[activePageIndex].isPostcard ? 'zine__page-card--postcard' : 'zine__page-card--standard'
-                      }`}
-                      data-tone={zine.pages[activePageIndex].tone}
-                      initial={{ opacity: 0, scale: 0.96, y: 14 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.96, y: -14 }}
-                      transition={{ duration: 0.45, ease: EASE }}
-                    >
-                      <div className="zine__card-inner">
-                        <PageRenderer
-                          page={zine.pages[activePageIndex]}
-                          index={activePageIndex}
-                          fields={fields}
-                          updateField={updateField}
-                          isFocusedView
-                        />
+            {/* ── [2면] 프롤로그 : 작가의 초상 (Blurred for IP) ── */}
+            <div
+              className={`zine-page zine-page--2 zine-page--blurred ${activePageIndex === 1 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(1)}
+            >
+              <div className="inner-frame">
+                <div>
+                  <span className="chapter-tag">PROLOGUE · 저자 소개</span>
+                  <h2 className="page-title">오늘 밤, 문인이 되어<br />원도심을 걷다</h2>
+
+                  <div className="page-blur-container">
+                    <div className="page-blur-content">
+                      <div className="photo-slot" style={{ height: '110px', margin: '8px 0' }}>
+                        <svg className="slot-cam-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                          <circle cx="12" cy="13" r="4" />
+                        </svg>
+                        <strong>[작가의 초상 스냅 사진]</strong>
+                        <span>골든아워의 동문길 또는<br />나만의 시그니처 드로잉 부착</span>
                       </div>
-                    </motion.div>
-                  </AnimatePresence>
+                      <div className="prompt-box">
+                        <strong>Q1.</strong> 오늘 하루, 익산에서 온 나는 일상의 역할을 잠시 내려놓고, 조금은 헐렁한 상태의 나로 이 거리를 걷는다.
+                      </div>
+                      <div className="prompt-box" style={{ marginBottom: 0 }}>
+                        <strong>Q2.</strong> 전주의 저녁 공기가 건네는 첫인상과 지금 내 마음의 배경음악(BGM)은?
+                        <div className="full-line"></div>
+                      </div>
+                    </div>
 
-                  <p className="zine__focus-hint">
-                    ※ 책의 빈칸(이름, 지역, 문장 등)을 직접 입력하면 표지와 각 장에 실시간으로 반영됩니다.
-                  </p>
+                    <div className="secret-seal-overlay">
+                      <div className="secret-seal">
+                        <span className="secret-seal__hanja">非公開</span>
+                        <span className="secret-seal__text">현장 전용 시크릿 워크북</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                /* Accordion (3D) or Flat Spread Mode */
-                <div
-                  className={`zine__book-strip ${
-                    viewMode === 'accordion' ? 'zine__book-strip--accordion' : 'zine__book-strip--flat'
-                  }`}
-                  style={{
-                    '--fold-deg': `${foldAngle}deg`,
-                  }}
-                >
-                  {zine.pages.map((page, idx) => {
-                    // Alternate fold angles for 3D accordion effect
-                    const isEven = idx % 2 === 0
-                    const angle = isEven ? -foldAngle : foldAngle
-                    const isSelected = activePageIndex === idx
+              </div>
+              <div className="page-num">- 02 -</div>
+            </div>
 
-                    return (
-                      <div
-                        key={page.no}
-                        className={`zine__accordion-panel ${
-                          page.isPostcard ? 'zine__accordion-panel--postcard' : 'zine__accordion-panel--standard'
-                        } ${isSelected ? 'is-selected' : ''}`}
-                        style={{
-                          transform:
-                            viewMode === 'accordion'
-                              ? `rotateY(${angle}deg)`
-                              : 'rotateY(0deg)',
-                        }}
-                        onClick={() => setActivePageIndex(idx)}
-                        title={`${page.label} (${page.title}) — 클릭하여 선택`}
-                      >
-                        {/* Realistic Paper Lighting & Spine Shadows */}
-                        {viewMode === 'accordion' && (
-                          <div
-                            className={`zine__panel-lighting ${
-                              isEven ? 'zine__panel-lighting--even' : 'zine__panel-lighting--odd'
-                            }`}
-                            aria-hidden="true"
-                          />
-                        )}
+            {/* ── [3면] 제1장 : 완판본문화관 (Blurred for IP) ── */}
+            <div
+              className={`zine-page zine-page--3 zine-page--blurred ${activePageIndex === 2 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(2)}
+            >
+              <div className="inner-frame">
+                <div>
+                  <span className="chapter-tag">CHAPTER 1 · 기록의 뿌리</span>
+                  <h2 className="page-title">완판본(完板本),<br />나무에 새긴 마음</h2>
 
-                        <div
-                          className={`zine__page-card ${
-                            page.isPostcard ? 'zine__page-card--postcard' : 'zine__page-card--standard'
-                          }`}
-                          data-tone={page.tone}
-                        >
-                          <div className="zine__card-inner">
-                            <PageRenderer
-                              page={page}
-                              index={idx}
-                              fields={fields}
-                              updateField={updateField}
-                            />
-                          </div>
+                  <div className="page-blur-container">
+                    <div className="page-blur-content">
+                      <div className="prompt-box">
+                        <strong>Q1. 오래된 문장 수집</strong><br />
+                        수백 년 전 전주의 목판에 새겨졌던 한글 이야기처럼, 내가 단 한 문장을 나무에 새겨 오래 남길 수 있다면?
+                        <div className="woodblock-quote-box">
+                          “ 나무는 썩어도 새겨진 문장은 시간을 건넌다. ”
                         </div>
                       </div>
-                    )
-                  })}
+                      <div className="prompt-box">
+                        <strong>Q2. 골목의 시선</strong><br />
+                        동문길로 걸어오는 길, 내 발걸음을 멈추게 한 해 질 녘의 장면은?
+                      </div>
+                      <div className="photo-slot" style={{ height: '65px' }}>
+                        <strong>[현장 캔디드 사진 1]</strong>
+                        <span>완판본 스탬프 또는 골목 풍경</span>
+                      </div>
+                    </div>
+
+                    <div className="secret-seal-overlay">
+                      <div className="secret-seal">
+                        <span className="secret-seal__hanja">非公開</span>
+                        <span className="secret-seal__text">현장 전용 시크릿 워크북</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
+              <div className="page-num">- 03 -</div>
             </div>
-          )}
+
+            {/* ── [4면] 제2장 (좌) : 삼양다방 만찬 (Blurred for IP) ── */}
+            <div
+              className={`zine-page zine-page--4 zine-page--blurred ${activePageIndex === 3 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(3)}
+            >
+              <div className="inner-frame">
+                <div>
+                  <span className="chapter-tag">CHAPTER 2 · 동문길의 풍류 (1/2)</span>
+                  <h2 className="page-title">1952년 삼양다방,<br />향음주례(鄕飮酒禮)의 밤</h2>
+
+                  <div className="page-blur-container">
+                    <div className="page-blur-content">
+                      <div className="prompt-box">
+                        <strong>Q1. 오늘의 풍류 정의</strong><br />
+                        옛 선비에게 풍류가 시와 술이었다면, 오늘 밤 나에게 '풍류'란 [ 다정한 술 한잔 ]이다.
+                      </div>
+                      <div className="photo-slot" style={{ height: '85px', margin: '6px 0' }}>
+                        <strong>[주안상 메뉴 카드 / 사진]</strong>
+                        <span>삼양다방 한식 다이닝 &<br />전통주 라벨 콜라주 부착란</span>
+                      </div>
+                      <div className="prompt-box" style={{ marginBottom: 0 }}>
+                        <strong>Q2. 위로가 된 한 입과 한 모금</strong><br />
+                        • 오늘의 요리 : 동문길 수제 맥적구이<br />
+                        • 오늘의 전통주 : 전주 이강주 25°
+                      </div>
+                    </div>
+
+                    <div className="secret-seal-overlay">
+                      <div className="secret-seal">
+                        <span className="secret-seal__hanja">非公開</span>
+                        <span className="secret-seal__text">현장 전용 시크릿 워크북</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="page-num">- 04 (센터 펼침 좌) -</div>
+            </div>
+
+            {/* ── [5면] 제2장 (우) : 테이스팅 노트 & 4축 별점 ── */}
+            <div
+              className={`zine-page zine-page--5 ${activePageIndex === 4 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(4)}
+            >
+              <div className="inner-frame">
+                <div>
+                  <span className="chapter-tag">CHAPTER 2 · 동문길의 풍류 (2/2)</span>
+                  <h2 className="page-title">미훈(微醺)의 기록,<br />기분 좋은 취기 속에서</h2>
+
+                  {/* 4축 별점 인터랙션 (호평받은 기능 실시간 활성화) */}
+                  <div className="taste-grid">
+                    <StarRating label="단맛" value={ratings.sweetness} onChange={(v) => updateRating('sweetness', v)} />
+                    <StarRating label="산미" value={ratings.acidity} onChange={(v) => updateRating('acidity', v)} />
+                    <StarRating label="바디감" value={ratings.body} onChange={(v) => updateRating('body', v)} />
+                    <StarRating label="여운" value={ratings.finish} onChange={(v) => updateRating('finish', v)} />
+                  </div>
+
+                  {/* 비공개 심층 미식 질문 영역 블러 처리 */}
+                  <div className="page-blur-container" style={{ marginTop: '8px' }}>
+                    <div className="page-blur-content">
+                      <div className="prompt-box">
+                        <strong>Q3. 미각의 언어화</strong><br />
+                        첫 잔을 마셨을 때 입안에 퍼진 맛을 계절이나 풍경으로 묘사한다면?
+                        <div className="full-line"></div>
+                        <div className="full-line"></div>
+                      </div>
+
+                      <div className="prompt-box" style={{ marginBottom: 0 }}>
+                        <strong>Q4. 취중진담(醉中眞談)</strong><br />
+                        기분 좋은 온기가 올라오는 지금, 평소 나에게 건네지 못했던 다정한 말 한마디는?
+                        <div className="full-line"></div>
+                      </div>
+                    </div>
+
+                    <div className="secret-seal-overlay">
+                      <div className="secret-seal">
+                        <span className="secret-seal__hanja">非公開</span>
+                        <span className="secret-seal__text">투어 전용 미식 질문</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="page-num">- 05 (센터 펼침 우) -</div>
+            </div>
+
+            {/* ── [6면] 제3장 : 심야 책방 (Blurred for IP) ── */}
+            <div
+              className={`zine-page zine-page--6 zine-page--blurred ${activePageIndex === 5 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(5)}
+            >
+              <div className="inner-frame">
+                <div>
+                  <span className="chapter-tag">CHAPTER 3 · 19:00 심야 서점</span>
+                  <h2 className="page-title">불 꺼진 전라감영길,<br />에이커북스토어를 열다</h2>
+
+                  <div className="page-blur-container">
+                    <div className="page-blur-content">
+                      <div className="prompt-box">
+                        <strong>Q1. 우연한 문장과의 조우</strong><br />
+                        낮의 이성적인 나였다면 고르지 않았을지도 모를, 오늘 밤의 내가 이끌린 책과 문장.
+                        <div className="book-quote-row">
+                          📖 책 제목 : 《 밤은 이야기하기에 좋은 시간 》
+                        </div>
+                        <div className="full-line"></div>
+                      </div>
+                      <div className="prompt-box">
+                        <strong>Q2. 심야의 단상</strong><br />
+                        전통주의 온기와 책방의 종이 냄새가 섞인 지금, 이 문장이 내 마음을 두드린 이유.
+                        <div className="full-line"></div>
+                      </div>
+                      <div style={{ textAlign: 'right', fontSize: '9px', color: 'var(--stamp-red)', marginTop: '4px' }}>
+                        [에이커 심야 처방 스탬프 날인란]
+                      </div>
+                    </div>
+
+                    <div className="secret-seal-overlay">
+                      <div className="secret-seal">
+                        <span className="secret-seal__hanja">非公開</span>
+                        <span className="secret-seal__text">현장 전용 시크릿 워크북</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="page-num">- 06 -</div>
+            </div>
+
+            {/* ── [7면] 에필로그 : 롤링페이퍼 (Blurred for IP) ── */}
+            <div
+              className={`zine-page zine-page--7 zine-page--blurred ${activePageIndex === 6 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(6)}
+            >
+              <div className="inner-frame">
+                <div>
+                  <span className="chapter-tag">EPILOGUE · 여운을 나누며</span>
+                  <h2 className="page-title">오늘 밤의 전주를<br />세 단어로 기억하다</h2>
+
+                  <div className="page-blur-container">
+                    <div className="page-blur-content">
+                      <div className="hashtag-row">
+                        <span className="hashtag-pill">#완판본</span>
+                        <span className="hashtag-pill">#동문길</span>
+                        <span className="hashtag-pill">#심야서점</span>
+                      </div>
+                      <div className="prompt-box">
+                        <strong>동행자의 시선 (Comment)</strong><br />
+                        함께 밤을 걸은 여행자 또는 책방지기님이 내 기록을 읽고 남겨주는 다정한 한 줄.
+                        <div className="rolling-paper-slot">
+                          (서로의 Zine을 바꿔 읽고 코멘트와 사인을 남겨주세요)
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="secret-seal-overlay">
+                      <div className="secret-seal">
+                        <span className="secret-seal__hanja">非公開</span>
+                        <span className="secret-seal__text">현장 전용 롤링페이퍼</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="page-num">- 07 -</div>
+            </div>
+
+            {/* ── [8면] 절취형 엽서 (Clear / 선명) ── */}
+            <div
+              className={`zine-page zine-page--8 perforated-left ${activePageIndex === 7 ? 'zine-page--active' : ''}`}
+              onClick={() => scrollToPage(7)}
+            >
+              <span className="cut-icon" aria-hidden="true">✂ 절취선</span>
+              <div className="inner-frame" style={{ borderStyle: 'dashed' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <span className="chapter-tag" style={{ color: 'var(--stamp-red)', borderColor: 'var(--stamp-red)' }}>
+                      POSTCARD · 한 달 뒤 우체통
+                    </span>
+                    <div className="stamp-box">우표</div>
+                  </div>
+                  <h2 className="page-title" style={{ fontSize: '13px' }}>
+                    계절이 바뀐 뒤,<br />다시 만날 나에게
+                  </h2>
+
+                  <div className="photo-slot" style={{ height: '85px', margin: '6px 0' }}>
+                    <strong>[베스트 포토 1매 부착]</strong>
+                    <span>오늘 가장 마음에 들었던 순간</span>
+                  </div>
+
+                  <div className="prompt-box" style={{ fontSize: '9.5px' }}>
+                    한 달 뒤 이 엽서를 우편으로 받아볼 나에게 보내는 편지
+                    <div className="full-line"></div>
+                    <div className="full-line"></div>
+                    <div className="postcard-address-info">
+                      받을 주소 : 전북 전주시 완산구 동문길 42<br />
+                      받는 사람 : 미래의 나에게
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="page-num">- 08 (절취형 엽서) -</div>
+            </div>
+          </div>
         </div>
 
-        {/* ── Below the Book: Feature Pills (No Emoticons) & Secondary CTA ── */}
-        <footer className="zine__footer">
-          <Reveal delay={0.1} y={20}>
-            <div className="zine__feature-pills">
-              <div className="zine__feature-pill glass">
-                <span className="zine__pill-num">01</span>
-                <span className="zine__pill-text">질문 프롬프트로 백지의 공포 없이</span>
-              </div>
-              <div className="zine__feature-pill glass">
-                <span className="zine__pill-num">02</span>
-                <span className="zine__pill-text">현장 즉석 인화 사진 부착</span>
-              </div>
-              <div className="zine__feature-pill glass">
-                <span className="zine__pill-num">03</span>
-                <span className="zine__pill-text">엽서는 한 달 뒤 실제 발송</span>
-              </div>
-            </div>
-          </Reveal>
+        {/* Bottom Feature Badges & CTA (No Emojis) */}
+        <div className="zine__features-row">
+          <div className="zine__feature-pill">
+            <span className="zine__feature-bullet">✦</span>
+            <span>질문 프롬프트로 백지의 공포 해소</span>
+          </div>
+          <div className="zine__feature-pill">
+            <span className="zine__feature-bullet">✦</span>
+            <span>현장 즉석 인화 사진 3매 부착</span>
+          </div>
+          <div className="zine__feature-pill">
+            <span className="zine__feature-bullet">✦</span>
+            <span>엽서는 한 달 뒤 실제 우편 발송</span>
+          </div>
+        </div>
 
-          <Reveal delay={0.2} y={20}>
-            <div className="zine__cta-wrap">
-              <button
-                type="button"
-                className="btn zine__cta-btn"
-                onClick={() => openBooking('t2')}
-              >
-                <span>나만의 책 만들러 가기</span>
-                <span className="btn-arrow">
-                  <Arrow />
-                </span>
-              </button>
-              <p className="zine__cta-sub">
-                * 매주 토요일 저녁 에이커북스토어 19:00 살롱에서 직접 제본하고 완성합니다
-              </p>
-            </div>
-          </Reveal>
-        </footer>
+        <div className="zine__cta-wrap">
+          <button
+            type="button"
+            className="btn btn--primary"
+            onClick={() => openBooking('t2')}
+          >
+            나만의 책 만들러 가기
+            <span className="btn-arrow" aria-hidden="true">
+              <Arrow size={14} />
+            </span>
+          </button>
+        </div>
       </div>
     </section>
-  )
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Individual Page Renderers (8 Physical Panels)
-   1~7: Equal Standard Gauge (동일 규격)
-   8: Detachable Postcard (단독 엽서 규격 허용)
-   ───────────────────────────────────────────────────────────── */
-
-/**
- * 4-Axis Interactive Taste Star Rating Component (단맛, 산미, 바디, 여운)
- */
-function StarRating({ value, onChange, label }) {
-  return (
-    <div className="zine-taste-item">
-      <span className="zine-taste-label zine-font-book">• {label} :</span>
-      <div className="zine-star-group" role="radiogroup" aria-label={`${label} 5점 만점 평점`}>
-        {[1, 2, 3, 4, 5].map((star) => {
-          const isFilled = star <= value
-          return (
-            <button
-              key={star}
-              type="button"
-              className={`zine-star-btn ${isFilled ? 'is-filled' : 'is-empty'}`}
-              onClick={(e) => {
-                e.stopPropagation()
-                onChange(star)
-              }}
-              title={`${label} ${star}점 선택`}
-              aria-label={`${label} ${star}점`}
-            >
-              {isFilled ? '★' : '☆'}
-            </button>
-          )
-        })}
-      </div>
-      <span className="zine-taste-val display italic">{value}/5</span>
-    </div>
-  )
-}
-
-function PageRenderer({ index, fields, updateField }) {
-  switch (index) {
-    case 0:
-      return <CoverPanel fields={fields} updateField={updateField} />
-    case 1:
-      return <ProloguePanel fields={fields} updateField={updateField} />
-    case 2:
-      return <Chapter1Panel fields={fields} updateField={updateField} />
-    case 3:
-      return <Chapter2MenuPanel fields={fields} updateField={updateField} />
-    case 4:
-      return <Chapter2TastingPanel fields={fields} updateField={updateField} />
-    case 5:
-      return <Chapter3NightPanel />
-    case 6:
-      return <Chapter3ManuscriptPanel fields={fields} updateField={updateField} />
-    case 7:
-      return <PostcardPanel fields={fields} updateField={updateField} />
-    default:
-      return null
-  }
-}
-
-/**
- * 1면: Cover Panel (완판본 스타일 표지)
- * 동일 표준 규격
- */
-function CoverPanel({ fields, updateField }) {
-  return (
-    <div className="zine-page zine-page--standard zine-page--cover">
-      <div className="zine-wanpan-border">
-        {/* Top Header */}
-        <div className="zine-cover__top-header">
-          <span className="zine-cover__woodblock-tag zine-font-book">完板本 現代新刊</span>
-          <span className="zine-cover__hanja-eyebrow zine-font-book">全州 深夜 風流錄</span>
-        </div>
-
-        {/* Center Wanpan Title Box (Classic Woodblock Upright Block) */}
-        <div className="zine-cover__center-area">
-          <div className="zine-wanpan-title-box" title="전주 심야 풍류록 목판 표제">
-            <span className="zine-wanpan-title-text zine-font-book">전주 심야 풍류록</span>
-          </div>
-          <div className="zine-cover__hanja-sub zine-font-book">
-            全 州 深 夜 風 流 錄
-          </div>
-
-          <div className="zine-cover__prompt-box">
-            <div className="zine-cover__prompt-inner zine-font-book">
-              [ <input
-                type="text"
-                className="zine-input zine-input--cover-topic zine-font-book"
-                value={fields.bookTopic}
-                onChange={(e) => updateField('bookTopic', e.target.value)}
-                placeholder="〇〇"
-                aria-label="책의 소주제"
-              /> ]을(를)<br />
-              찾아 떠난 어느 밤의 기록
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Colophon and Red Seal Stamp */}
-        <div className="zine-cover__bottom-colophon">
-          <div className="zine-cover__meta-left zine-font-book">
-            <div className="zine-cover__meta-line">발행일 : 2026. 10. ___</div>
-            <div className="zine-cover__meta-line zine-cover__author-line">
-              <span>지은이 : </span>
-              <input
-                type="text"
-                className="zine-input zine-input--cover-author zine-font-book"
-                value={fields.authorName}
-                onChange={(e) => updateField('authorName', e.target.value)}
-                placeholder="당신의 이름"
-                aria-label="저자 이름 기입"
-              />
-              <span className="zine-cover__author-in">(인)</span>
-            </div>
-          </div>
-
-          <div className="zine-cover__stamp-box" title="완판본 초판 1쇄 검인">
-            <div className="zine-cover__stamp zine-font-book">
-              <span>完板本</span>
-              <span>初版一刷</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="zine-cover__publisher-tag zine-font-book">
-          완판본문화관 × 삼양다방 × 에이커북스토어 합본
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * 2면: Prologue Panel (저자 소개)
- * 동일 표준 규격
- */
-function ProloguePanel({ fields, updateField }) {
-  return (
-    <div className="zine-page zine-page--standard zine-page--prologue">
-      <div className="zine-page__inner-rule">
-        <div className="zine-page__top-meta">
-          <span className="zine-page__chapter-num display italic">02 · PROLOGUE</span>
-          <span className="zine-page__chapter-label zine-font-book">작가의 말</span>
-        </div>
-
-        <h4 className="zine-page__heading zine-font-book">프롤로그 : 밤을 걷는 지은이</h4>
-
-        <div className="zine-prologue__photo-mount">
-          <div className="zine-photo-corner zine-photo-corner--tl" />
-          <div className="zine-photo-corner zine-photo-corner--tr" />
-          <div className="zine-photo-corner zine-photo-corner--bl" />
-          <div className="zine-photo-corner zine-photo-corner--br" />
-
-          <div className="zine-prologue__photo-inner">
-            <div className="zine-prologue__photo-preview">
-              <img
-                src={assetUrl('images/hanbok-detail.jpg')}
-                alt="골든아워 집필하는 여행자 스냅"
-                loading="lazy"
-                width="140"
-                height="160"
-              />
-              <div className="zine-prologue__photo-badge zine-font-book">작가의 초상 스냅</div>
-            </div>
-            <p className="zine-prologue__photo-desc zine-font-book">
-              골든아워 동문길 또는 서가 스냅 즉석 인화본 1매 부착
-            </p>
-          </div>
-        </div>
-
-        <div className="zine-prologue__prompt-box zine-font-book">
-          <p className="zine-prologue__q-title"><strong>Q1. 오늘의 지은이 소개</strong></p>
-          <p className="zine-prologue__sentence">
-            오늘 하루,{' '}
-            <span className="zine-input-inline-wrap">
-              <input
-                type="text"
-                className="zine-input zine-input--inline zine-font-book"
-                value={fields.originCity}
-                onChange={(e) => updateField('originCity', e.target.value)}
-                placeholder="출발지"
-                aria-label="출발 도시"
-              />
-            </span>
-            에서 온 나는 일상의 역할을 잠시 내려놓고,{' '}
-            <span className="zine-input-inline-wrap zine-input-inline-wrap--wide">
-              <input
-                type="text"
-                className="zine-input zine-input--inline zine-font-book"
-                value={fields.myState}
-                onChange={(e) => updateField('myState', e.target.value)}
-                placeholder="어떤 상태의 나"
-                aria-label="오늘의 마음 상태"
-              />
-            </span>
-            상태의 나로 전주 원도심을 걷는다.
-          </p>
-        </div>
-
-        <div className="zine-prologue__ambient-box zine-font-book">
-          <strong>오늘의 날씨와 BGM :</strong><br />
-          <span>공기의 온도 [ </span>
-          <input
-            type="text"
-            className="zine-input zine-input--inline zine-input--temp zine-font-book"
-            value={fields.weatherTemp}
-            onChange={(e) => updateField('weatherTemp', e.target.value)}
-            placeholder="18℃ 선선함"
-            aria-label="공기의 온도"
-          />
-          <span> ] / 음악 [ </span>
-          <input
-            type="text"
-            className="zine-input zine-input--inline zine-input--bgm zine-font-book"
-            value={fields.bgmTrack}
-            onChange={(e) => updateField('bgmTrack', e.target.value)}
-            placeholder="마음의 BGM"
-            aria-label="음악 선곡"
-          />
-          <span> ]</span>
-        </div>
-
-        <div className="zine-prologue__signature-row zine-font-book">
-          <span className="zine-prologue__sig-label">지은이 서명:</span>
-          <span className="zine-prologue__sig-name">{fields.authorName || '무명 작가'}</span>
-          <span className="zine-prologue__sig-date display italic">2026. Saturday Night</span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * 3면: Chapter 1 Panel (기록의 뿌리)
- * 동일 표준 규격
- */
-function Chapter1Panel({ fields, updateField }) {
-  return (
-    <div className="zine-page zine-page--standard zine-page--chapter1">
-      <div className="zine-page__inner-rule">
-        <div className="zine-page__top-meta">
-          <span className="zine-page__chapter-num display italic">03 · CHAPTER 1</span>
-          <span className="zine-page__chapter-label zine-font-book">15:30 완판본문화관</span>
-        </div>
-
-        <div className="zine-ch1__hanja-bg" aria-hidden="true">
-          錄
-        </div>
-
-        <h4 className="zine-page__heading zine-font-book">제1장. 기록의 뿌리를 걷다</h4>
-
-        <div className="zine-ch1__prompt-card zine-font-book">
-          <p className="zine-ch1__prompt-lead">
-            <strong>Q1. 목판에 새길 단 한 문장</strong><br />
-            최초의 한글 대중문학이 꽃핀 전주의 옛 목판처럼, 내가 나무에 새겨 오래 남기고 싶은 문장은?
-          </p>
-
-          <div className="zine-ch1__woodplate-area">
-            <span className="zine-ch1__wood-grain" aria-hidden="true" />
-            <textarea
-              className="zine-textarea zine-textarea--wood zine-font-book"
-              value={fields.sentence}
-              onChange={(e) => updateField('sentence', e.target.value)}
-              rows={3}
-              placeholder="나무에 새길 문장을 적어보세요..."
-              aria-label="나무에 새길 문장"
-            />
-            <div className="zine-ch1__woodplate-footer zine-font-book">
-              <span className="zine-ch1__wood-tag">완판본 서각 필경 란</span>
-              <span className="zine-ch1__wood-seal">鐫 (새길 전)</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="zine-ch1__stamp-mount">
-          <div className="zine-ch1__stamp-box">
-            <div className="zine-ch1__real-stamp">
-              <div className="zine-ch1__stamp-inner zine-font-book">
-                <span>完判本</span>
-                <span>印記</span>
-              </div>
-            </div>
-            <div className="zine-ch1__stamp-desc zine-font-book">
-              <p className="zine-ch1__stamp-title">골목 캔디드 스케치 or 완판본 스탬프</p>
-              <p className="zine-ch1__stamp-sub">전통 한지에 먹으로 직접 찍은 목판 낙관 날인란</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="zine-ch1__scene-prompt zine-font-book">
-          <strong>Q2. 오후 4시의 시선 : </strong>
-          <span>동문길로 걸어오며 내 발걸음을 멈추게 한 장면은?</span>
-          <input
-            type="text"
-            className="zine-input zine-input--scene zine-font-book"
-            value={fields.sceneAt4pm}
-            onChange={(e) => updateField('sceneAt4pm', e.target.value)}
-            placeholder="발걸음을 멈추게 한 장면..."
-            aria-label="오후 4시의 시선"
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * 4면: Chapter 2A (동문길 만찬 주안상 - 센터 스프레드 좌측)
- * 동일 표준 규격
- * 폰트 적용: var(--font-book) 고운바탕, 나눔명조, 노토세리프 전면 적용
- */
-function Chapter2MenuPanel({ fields, updateField }) {
-  return (
-    <div className="zine-page zine-page--standard zine-page--chapter2-menu spread-left">
-      <div className="zine-page__inner-rule">
-        <div className="zine-page__top-meta">
-          <span className="zine-page__chapter-num display italic">04 · CHAPTER 2 (LEFT)</span>
-          <span className="zine-page__chapter-label zine-font-book">17:00 삼양다방(1952~)</span>
-        </div>
-
-        <h4 className="zine-page__heading zine-font-book">제2장. 동문길의 밤과 풍류 만찬</h4>
-
-        {/* Mounted Menu Card with Washi Tape - Pure Serif Typography */}
-        <div className="zine-ch2__menu-card">
-          <div className="zine__washi-tape zine__washi-tape--top-left" />
-          <div className="zine__washi-tape zine__washi-tape--top-right" />
-
-          <div className="zine-ch2__menu-header">
-            <span className="display italic zine-ch2__menu-en-title">SINCE 1952 · DONGMUN-GIL SALON</span>
-            <span className="zine-ch2__menu-stamp zine-font-book">三陽茶房</span>
-          </div>
-
-          <h5 className="zine-ch2__menu-korean-title zine-font-book">三 陽 風 流 酒 案 床</h5>
-          <p className="zine-ch2__menu-sub-desc zine-font-book">삼양다방 심야 풍류 주안상 & 로컬 전통주 페어링</p>
-
-          <ul className="zine-ch2__menu-list zine-font-book">
-            <li>
-              <span className="zine-ch2__course-badge zine-font-book">제1미</span>
-              <div className="zine-ch2__course-info">
-                <strong className="zine-font-book">계절 나물 메밀전병과 한입 주전부리</strong>
-                <span className="zine-font-book">× 로컬 약주 (청주)</span>
-              </div>
-            </li>
-            <li>
-              <span className="zine-ch2__course-badge zine-font-book">제2미</span>
-              <div className="zine-ch2__course-info">
-                <strong className="zine-font-book">동문길 수제 맥적(貊炙)구이와 반상</strong>
-                <span className="zine-font-book">× 수제 순곡 탁주</span>
-              </div>
-            </li>
-            <li>
-              <span className="zine-ch2__course-badge zine-font-book">제3미</span>
-              <div className="zine-ch2__course-info">
-                <strong className="zine-font-book">수제 곶감 호두말이 & 다과</strong>
-                <span className="zine-font-book">× 전주 이강주 (또는 증류주)</span>
-              </div>
-            </li>
-          </ul>
-
-          <div className="zine-ch2__menu-footer zine-font-book">
-            <span>“술은 기호식품이 아닌 반주(飯酒) 문화입니다.”</span>
-          </div>
-        </div>
-
-        {/* Q1. 나만의 풍류 정의 */}
-        <div className="zine-ch2__pungryu-prompt zine-font-book">
-          <p className="zine-ch2__pungryu-title"><strong>Q1. 나만의 풍류(風流) 정의</strong></p>
-          <p className="zine-ch2__pungryu-sentence">
-            옛 선비에게 풍류가 시와 술이었다면, 오늘 저녁 삼양다방에 앉아 있는 나에게 풍류란 [
-            <input
-              type="text"
-              className="zine-input zine-input--inline zine-input--pungryu zine-font-book"
-              value={fields.myPungryu}
-              onChange={(e) => updateField('myPungryu', e.target.value)}
-              placeholder="나만의 풍류"
-              aria-label="풍류 정의"
-            />
-            ]이다.
-          </p>
-        </div>
-
-        <div className="zine-ch2__footer-guide zine-font-book">
-          <span>▶ 우측 페이지로 만찬 기록이 이어집니다</span>
-          <span className="zine-ch2__mini-stamp zine-font-book">三陽</span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * 5면: Chapter 2B (미식 시음 노트 - 센터 스프레드 우측)
- * 동일 표준 규격
- * 4축 테이스팅 스타 레이팅: 단맛, 산미, 바디, 여운
- */
-function Chapter2TastingPanel({ fields, updateField }) {
-  return (
-    <div className="zine-page zine-page--standard zine-page--chapter2-tasting spread-right">
-      <div className="zine-page__inner-rule">
-        <div className="zine-page__top-meta">
-          <span className="zine-page__chapter-num display italic">05 · CHAPTER 2 (RIGHT)</span>
-          <span className="zine-page__chapter-label zine-font-book">풍류 주안상 노트</span>
-        </div>
-
-        <h4 className="zine-page__heading zine-font-book">반주(飯酒)와 미식 에세이</h4>
-
-        {/* Q2. 오늘 나를 가장 위로한 한 입과 한 모금 */}
-        <div className="zine-tasting__dish-drink-box zine-font-book">
-          <p className="zine-tasting__box-title">
-            <strong>Q2. 오늘 나를 가장 위로한 한 입과 한 모금</strong>
-          </p>
-          <div className="zine-tasting__input-row">
-            <span className="zine-tasting__dot">• 요리 : </span>
-            <input
-              type="text"
-              className="zine-input zine-input--inline zine-input--dish zine-font-book"
-              value={fields.favoriteDish}
-              onChange={(e) => updateField('favoriteDish', e.target.value)}
-              placeholder="예: 동문길 수제 맥적구이"
-              aria-label="위로가 된 요리"
-            />
-          </div>
-          <div className="zine-tasting__input-row">
-            <span className="zine-tasting__dot">• 전통주 : </span>
-            <input
-              type="text"
-              className="zine-input zine-input--inline zine-input--drink zine-font-book"
-              value={fields.favoriteDrink}
-              onChange={(e) => updateField('favoriteDrink', e.target.value)}
-              placeholder="예: 전주 이강주 25°"
-              aria-label="기억에 남는 술"
-            />
-          </div>
-        </div>
-
-        {/* 4-Axis Taste Star Graph (단맛, 산미, 바디, 여운) */}
-        <div className="zine-taste-graph" aria-label="전통주 4축 테이스팅 그래프">
-          <div className="zine-taste-graph__header">
-            <span className="zine-taste-graph__title zine-font-book">미식 테이스팅 4축 지수</span>
-            <span className="zine-taste-graph__sub display italic">Taste Rating</span>
-          </div>
-          <div className="zine-taste-grid">
-            <StarRating
-              label="단맛"
-              value={fields.sweetness}
-              onChange={(v) => updateField('sweetness', v)}
-            />
-            <StarRating
-              label="산미"
-              value={fields.acidity}
-              onChange={(v) => updateField('acidity', v)}
-            />
-            <StarRating
-              label="바디"
-              value={fields.body}
-              onChange={(v) => updateField('body', v)}
-            />
-            <StarRating
-              label="여운"
-              value={fields.finish}
-              onChange={(v) => updateField('finish', v)}
-            />
-          </div>
-        </div>
-
-        {/* Q3. 미각의 문장화 */}
-        <div className="zine-tasting__flavor-box zine-font-book">
-          <p className="zine-tasting__box-title">
-            <strong>Q3. 미각의 문장화 : </strong>
-            <span>술과 음식이 어우러진 맛을 계절이나 색깔로 묘사한다면?</span>
-          </p>
-          <textarea
-            className="zine-textarea zine-textarea--lines zine-font-book"
-            value={fields.tastingNote}
-            onChange={(e) => updateField('tastingNote', e.target.value)}
-            rows={2}
-            placeholder="맛과 풍경을 자유롭게 기록하세요..."
-            aria-label="미각의 문장화 에세이"
-          />
-        </div>
-
-        {/* 취중진담 한 줄 */}
-        <div className="zine-tasting__warm-words-box zine-font-book">
-          <p className="zine-tasting__warm-title">
-            <strong>취중진담(醉中眞談) 한 줄 :</strong>
-          </p>
-          <p className="zine-tasting__warm-sub">기분 좋은 온기가 오른 지금, 나에게 건네는 다정한 말 한마디.</p>
-          <div className="zine-tasting__quote-line">
-            “ <input
-              type="text"
-              className="zine-input zine-input--quote zine-font-book"
-              value={fields.warmWords}
-              onChange={(e) => updateField('warmWords', e.target.value)}
-              placeholder="나에게 건네는 따뜻한 말"
-              aria-label="취중진담 한 줄"
-            /> ”
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * 6면: Chapter 3A (불 켜진 심야 서점 - 서재 스프레드 좌측)
- * 동일 표준 규격
- */
-function Chapter3NightPanel() {
-  return (
-    <div className="zine-page zine-page--standard zine-page--chapter3-night">
-      <div className="zine-page__inner-rule">
-        <div className="zine-page__top-meta">
-          <span className="zine-page__chapter-num display italic">Chapter 3 · Page 6</span>
-          <span className="zine-page__chapter-label">에이커북스토어 · 19:00</span>
-        </div>
-
-        <h4 className="zine-page__heading serif">불 켜진 심야 서재의 문장</h4>
-
-        <div className="zine-ch3__bookstore-photo">
-          <div className="zine__washi-tape zine__washi-tape--top-center" />
-          <img
-            src={assetUrl('images/bookstore-night.jpg')}
-            alt="영업 종료 후 심야 책방 풍경"
-            loading="lazy"
-            width="220"
-            height="145"
-          />
-          <p className="zine-ch3__photo-caption serif">
-            영업 종료 후, 우리에게만 열린 에이커북스토어 19:40
-          </p>
-        </div>
-
-        <div className="zine-ch3__prompt-card">
-          <p className="zine-ch3__prompt-text serif">
-            “낮의 이성적인 나였다면 고르지 않았을지도 모를, 오늘 밤의 내가 이끌린 책 한 권과 그 속의 문장.”
-          </p>
-        </div>
-
-        <div className="zine-ch3__rx-seal">
-          <div className="zine-ch3__seal-ring">
-            <span className="zine-ch3__seal-arc display italic">ACER BOOKSTORE</span>
-            <span className="zine-ch3__seal-core serif">深夜處方</span>
-            <span className="zine-ch3__seal-date display italic">2026 · 全州</span>
-          </div>
-          <p className="zine-ch3__seal-desc serif">
-            책방지기의 심야 처방 문장 스탬프 날인란
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * 7면: Chapter 3B (200자 원고지 집필 란 - 서재 스프레드 우측)
- * 동일 표준 규격
- */
-function Chapter3ManuscriptPanel({ fields, updateField }) {
-  const sampleChars = (fields.manuscriptText || '').split('').slice(0, 36)
-
-  return (
-    <div className="zine-page zine-page--standard zine-page--chapter3-manuscript">
-      <div className="zine-page__inner-rule">
-        <div className="zine-page__top-meta">
-          <span className="zine-page__chapter-num display italic">Manuscript · Page 7</span>
-          <span className="zine-page__chapter-label">200자 원고지 집필</span>
-        </div>
-
-        <div className="zine-ch3__manuscript-wrap">
-          <div className="zine-ch3__manuscript-header">
-            <span className="zine-ch3__ms-title serif">全州 深夜 風流 原稿紙</span>
-            <span className="zine-ch3__ms-counter display italic">20 × 10</span>
-          </div>
-
-          {/* Manuscript grid frame */}
-          <div className="zine-ch3__wongoji-grid" aria-label="원고지 입력 그리드">
-            {Array.from({ length: 32 }).map((_, i) => (
-              <div key={i} className="zine-ch3__wongoji-cell">
-                <span className="zine-ch3__wongoji-char serif">
-                  {sampleChars[i] || ''}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Interactive textarea updating manuscript */}
-          <div className="zine-ch3__input-wrap">
-            <label htmlFor="ch3-manuscript-input" className="zine-ch3__input-label serif">
-              원고지 문장 입력하기:
-            </label>
-            <textarea
-              id="ch3-manuscript-input"
-              className="zine-textarea zine-textarea--manuscript serif"
-              value={fields.manuscriptText}
-              onChange={(e) => updateField('manuscriptText', e.target.value)}
-              rows={3}
-              placeholder="책방에서 발견한 문장을 적어주세요..."
-            />
-          </div>
-        </div>
-
-        <div className="zine-page__footer-note">
-          전라감영길 독립서점 · 종이 냄새와 나만의 활자
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * 8면: Epilogue & Detachable Postcard Panel (엽서)
- * 단독 엽서 규격 허용!
- */
-function PostcardPanel({ fields, updateField }) {
-  return (
-    <div className="zine-page zine-page--postcard">
-      {/* Detachable Perforation Line (미싱선) */}
-      <div className="zine-postcard__perforation" aria-hidden="true">
-        <span className="zine-postcard__perf-tag display italic">TEAR OFF · 절취선</span>
-        <span className="zine-postcard__perf-line" />
-      </div>
-
-      <div className="zine-postcard__body">
-        <div className="zine-page__top-meta">
-          <span className="zine-page__chapter-num display italic">Epilogue · Page 8</span>
-          <span className="zine-page__chapter-label">Postcard to Future Me</span>
-        </div>
-
-        {/* Postcard Layout */}
-        <div className="zine-postcard__card-surface">
-          <div className="zine-postcard__header-row">
-            <div className="zine-postcard__title-block">
-              <span className="zine-postcard__main-tag display italic">Post Card</span>
-              <p className="zine-postcard__sub-prompt serif">
-                “계절이 바뀐 뒤 다시 전주를 찾을 나에게 보내는 짧은 편지.”
-              </p>
-            </div>
-
-            {/* Vintage Postage Stamp Box */}
-            <div className="zine-postcard__stamp-box">
-              <div className="zine-postcard__stamp-serration">
-                <span className="zine-postcard__stamp-kr serif">全州 우표</span>
-                <span className="zine-postcard__stamp-val display italic">₩430</span>
-                <span className="zine-postcard__stamp-motif serif">風流</span>
-              </div>
-              <span className="zine-postcard__stamp-caption">우표 붙이는 곳</span>
-            </div>
-          </div>
-
-          {/* Postcard Message & Address Grid */}
-          <div className="zine-postcard__grid">
-            <div className="zine-postcard__message-col">
-              <textarea
-                className="zine-textarea zine-textarea--postcard serif"
-                value={fields.postcardMessage}
-                onChange={(e) => updateField('postcardMessage', e.target.value)}
-                rows={5}
-                placeholder="미래의 나에게 부칠 편지를 써보세요..."
-                aria-label="미래의 나에게 보내는 편지"
-              />
-            </div>
-
-            <div className="zine-postcard__address-col">
-              <div className="zine-postcard__field">
-                <label className="zine-postcard__field-label serif">To (받는 사람):</label>
-                <input
-                  type="text"
-                  className="zine-input zine-input--underline serif"
-                  value={fields.postcardTo}
-                  onChange={(e) => updateField('postcardTo', e.target.value)}
-                  placeholder="미래의 나에게"
-                />
-              </div>
-
-              <div className="zine-postcard__field">
-                <label className="zine-postcard__field-label serif">Address (주소):</label>
-                <input
-                  type="text"
-                  className="zine-input zine-input--underline serif"
-                  value={fields.postcardAddress}
-                  onChange={(e) => updateField('postcardAddress', e.target.value)}
-                  placeholder="한 달 뒤 받을 나의 주소"
-                />
-              </div>
-
-              {/* Real Postmark Seal */}
-              <div className="zine-postcard__postmark">
-                <div className="zine-postmark-circle">
-                  <span className="display italic">JEONJU</span>
-                  <strong>30 DAYS</strong>
-                  <span className="display italic">LATER</span>
-                </div>
-                <p className="zine-postcard__fulfillment-note serif">
-                  * 에이커북스토어 우체통에 넣으시면 30일 뒤 귀하의 자택으로 실제 발송됩니다.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   )
 }

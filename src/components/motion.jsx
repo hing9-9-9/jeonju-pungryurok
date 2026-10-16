@@ -29,13 +29,14 @@ export function Reveal({ children, delay = 0, y = 36, as = 'div', className, sty
  * SplitLines — each line slides up from a mask (editorial headline reveal).
  * lines: string[]  (each entry is one visual line)
  */
-export function SplitLines({ lines, as = 'h2', className, delay = 0, stagger = 0.09, lineClassName }) {
+export function SplitLines({ lines, text, as = 'h2', className, delay = 0, stagger = 0.09, lineClassName }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, amount: 0.4 })
   const Tag = as
+  const resolvedLines = lines ? (Array.isArray(lines) ? lines : [lines]) : (text ? (Array.isArray(text) ? text : [text]) : [])
   return (
-    <Tag ref={ref} className={className} aria-label={lines.join(' ')}>
-      {lines.map((line, i) => (
+    <Tag ref={ref} className={className} aria-label={resolvedLines.join(' ')}>
+      {resolvedLines.map((line, i) => (
         <span
           key={i}
           aria-hidden="true"
