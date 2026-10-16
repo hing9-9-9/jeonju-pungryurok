@@ -1,0 +1,490 @@
+/* ─────────────────────────────────────────────────────────────
+   Tickets — 전주 심야 풍류록
+   Physical luxury boarding pass / ticket stub aesthetic
+   ───────────────────────────────────────────────────────────── */
+
+.tickets {
+  position: relative;
+  overflow: hidden;
+}
+
+.tickets__container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 5.5rem);
+}
+
+.tickets__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 680px;
+  margin-inline: auto;
+  gap: 1.1rem;
+}
+
+.tickets__title {
+  color: var(--ink);
+}
+
+.tickets__lead {
+  max-width: 58ch;
+}
+
+/* ── 3-Tier Ticket Stub Grid ──────────────────────────────── */
+.tickets__grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 2rem;
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .tickets__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1120px) {
+  .tickets__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.8rem;
+  }
+}
+
+/* ── Ticket Card Outer Shell ──────────────────────────────── */
+.tickets__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: var(--r-md);
+  padding: 0;
+  overflow: visible;
+  transition: box-shadow 0.5s var(--ease-out), border-color 0.4s var(--ease-out);
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 20px 50px -20px rgba(60, 40, 90, 0.18), 0 2px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.tickets__card:hover {
+  box-shadow: 0 32px 70px -25px rgba(45, 30, 80, 0.28), 0 2px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+/* Pastel Tint per Tone */
+.tickets__card.tone--peach {
+  background: linear-gradient(180deg, rgba(255, 243, 237, 0.72) 0%, rgba(255, 255, 255, 0.6) 100%);
+}
+.tickets__card.tone--rose {
+  background: linear-gradient(180deg, rgba(255, 240, 246, 0.8) 0%, rgba(255, 255, 255, 0.65) 100%);
+}
+.tickets__card.tone--lilac {
+  background: linear-gradient(180deg, rgba(247, 242, 255, 0.76) 0%, rgba(255, 255, 255, 0.6) 100%);
+}
+
+/* Featured Tier 2 Styling */
+.tickets__card--featured {
+  border: 1.5px solid rgba(232, 85, 58, 0.38);
+  box-shadow: 0 25px 60px -20px rgba(232, 85, 58, 0.22), 0 2px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.tickets__card--featured:hover {
+  border-color: rgba(232, 85, 58, 0.6);
+  box-shadow: 0 35px 80px -25px rgba(232, 85, 58, 0.32), 0 2px 0 rgba(255, 255, 255, 1) inset;
+}
+
+.tickets__badge-featured {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.95rem;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px -6px rgba(31, 26, 46, 0.45);
+}
+
+.tickets__badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--seal);
+  box-shadow: 0 0 8px var(--seal);
+}
+
+/* ── Upper Body (Main Pass) ───────────────────────────────── */
+.tickets__body {
+  padding: 2.2rem 2.2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tickets__meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ink-line);
+  padding-bottom: 0.75rem;
+}
+
+.tickets__serial {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.tickets__tier-en {
+  font-size: 1.15rem;
+  color: var(--ink-2);
+}
+
+.tickets__name-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tickets__tier-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--seal);
+}
+
+.tickets__name {
+  font-family: var(--font-serif-kr);
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.tickets__desc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  min-height: 3.2em;
+}
+
+.tickets__price-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem 0.8rem;
+  margin-top: 0.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(31, 26, 46, 0.08);
+}
+
+.tickets__price-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.tickets__price {
+  font-size: clamp(2.2rem, 3vw, 2.75rem);
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+
+.tickets__unit {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.tickets__add-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--r-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(232, 85, 58, 0.1);
+  color: var(--seal);
+  letter-spacing: -0.01em;
+}
+
+/* ── Perforation Cut Line with Semicircle Notches ─────────── */
+.tickets__perforation {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  overflow: visible;
+  user-select: none;
+}
+
+.tickets__dash-line {
+  flex: 1;
+  height: 1px;
+  border-top: 1.5px dashed rgba(31, 26, 46, 0.22);
+}
+
+.tickets__tear-text {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+  padding: 0 0.8rem;
+  white-space: nowrap;
+}
+
+/* Semi-circle notches punch holes at left & right borders */
+.tickets__notch {
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px rgba(31, 26, 46, 0.14), inset 0 2px 4px rgba(31, 26, 46, 0.08);
+  z-index: 2;
+}
+
+.tickets__notch--left {
+  left: -11px;
+}
+
+.tickets__notch--right {
+  right: -11px;
+}
+
+/* ── Lower Stub (Inclusions, Barcode & Action) ─────────────── */
+.tickets__stub {
+  padding: 1.4rem 2.2rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  gap: 1.8rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-bottom-left-radius: var(--r-md);
+  border-bottom-right-radius: var(--r-md);
+}
+
+.tickets__inclusions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.tickets__inclusions-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.tickets__inclusions-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.tickets__inclusion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  line-height: 1.48;
+  color: var(--ink-2);
+}
+
+.tickets__inclusion-item span {
+  flex: 1;
+}
+
+.tickets__check-icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  margin-top: 0.18rem;
+  color: var(--seal);
+}
+
+/* ── Stub Footer (Barcode + CTA) ──────────────────────────── */
+.tickets__stub-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tickets__barcode-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--ink-3);
+  opacity: 0.7;
+  padding-block: 0.25rem;
+  transition: opacity 0.3s;
+}
+
+.tickets__card:hover .tickets__barcode-wrap {
+  opacity: 1;
+  color: var(--ink);
+}
+
+.tickets__barcode {
+  width: 160px;
+  height: 28px;
+}
+
+.tickets__cta {
+  width: 100%;
+  justify-content: center;
+  font-size: 0.94rem;
+  padding: 0.95em 1.2em;
+}
+
+.tickets__card--featured .tickets__cta {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── Perk Chips Section ───────────────────────────────────── */
+.tickets__perks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  padding: clamp(2rem, 4vw, 3rem);
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 20px 60px -20px rgba(60, 40, 90, 0.12);
+  margin-top: 1rem;
+}
+
+.tickets__perks-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.tickets__perks-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--seal);
+}
+
+.tickets__perks-headline {
+  font-family: var(--font-serif-kr);
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.tickets__perks-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (min-width: 840px) {
+  .tickets__perks-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.tickets__perk-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  padding: 1.5rem 1.6rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+}
+
+.tickets__perk-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -12px rgba(60, 40, 90, 0.16);
+}
+
+.tickets__perk-icon-box {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(232, 85, 58, 0.1);
+  color: var(--seal);
+  flex-shrink: 0;
+}
+
+.tickets__perk-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tickets__perk-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tickets__perk-title {
+  font-family: var(--font-serif-kr);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tickets__perk-badge {
+  display: inline-flex;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--r-pill);
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(31, 26, 46, 0.08);
+  color: var(--ink-2);
+}
+
+.tickets__perk-desc {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* ── Mobile Tuning ────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .tickets__body {
+    padding: 1.8rem 1.4rem 1.4rem;
+  }
+  .tickets__stub {
+    padding: 1.2rem 1.4rem 1.8rem;
+  }
+  .tickets__perks {
+    padding: 1.8rem 1.2rem;
+  }
+}

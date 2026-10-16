@@ -1,0 +1,652 @@
+/* ─────────────────────────────────────────────────────────────
+   Course Section — Scrollytelling Flagship Timeline
+   전주 심야 풍류록 (Jeonju Midnight Pungryu-rok)
+   ───────────────────────────────────────────────────────────── */
+
+.course {
+  position: relative;
+  padding-block: var(--section-y);
+  overflow: clip;
+}
+
+.course__container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Section Header ──────────────────────────────────────── */
+.course__header {
+  max-width: 860px;
+  margin-bottom: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.course__eyebrow-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.course__badge-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--r-pill);
+  background: rgba(31, 26, 46, 0.05);
+  border: 1px solid rgba(31, 26, 46, 0.08);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.course__title {
+  font-family: var(--font-serif-kr);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.course__note-box {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(31, 26, 46, 0.08);
+  box-shadow: 0 4px 14px rgba(31, 26, 46, 0.03);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.course__note-icon {
+  color: var(--seal);
+  font-size: 0.85rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.course__note-text {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--ink-2);
+  word-break: keep-all;
+}
+
+/* ── Scrollytelling 2-Column Layout ──────────────────────── */
+.course__scrolly-layout {
+  display: block;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .course__scrolly-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: clamp(3rem, 5vw, 6rem);
+    align-items: start;
+  }
+}
+
+/* ── Left Column: Sticky Visualizer ───────────────────────── */
+.course__sticky-col {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .course__sticky-col {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 96px;
+    height: calc(100vh - 120px);
+    max-height: 820px;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    z-index: 10;
+  }
+}
+
+/* Ambient Day-to-Night Lighting Glow */
+.course-hero__lighting-halo {
+  position: absolute;
+  inset: -15% -20%;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(55px);
+  opacity: 0.65;
+  transition: background 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 50%;
+}
+
+/* Lighting tone gradients */
+.course-hero__lighting-halo--jade {
+  background: radial-gradient(circle at 45% 45%, rgba(191, 227, 211, 0.85) 0%, transparent 65%);
+}
+.course-hero__lighting-halo--butter {
+  background: radial-gradient(circle at 45% 45%, rgba(255, 240, 179, 0.9) 0%, transparent 65%);
+}
+.course-hero__lighting-halo--apricot {
+  background: radial-gradient(circle at 45% 45%, rgba(255, 194, 158, 0.85) 0%, transparent 65%);
+}
+.course-hero__lighting-halo--rose {
+  background: radial-gradient(circle at 45% 45%, rgba(255, 203, 225, 0.85) 0%, transparent 65%);
+}
+.course-hero__lighting-halo--sky {
+  background: radial-gradient(circle at 45% 45%, rgba(198, 224, 255, 0.85) 0%, transparent 65%);
+}
+.course-hero__lighting-halo--lilac {
+  background: radial-gradient(circle at 45% 45%, rgba(217, 200, 255, 0.9) 0%, transparent 65%);
+}
+
+/* Giant Time Display */
+.course-hero__time-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(31, 26, 46, 0.1);
+}
+
+.course-hero__time-digits {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.course-hero__time-val {
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 4.8vw, 5.2rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0.95;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+  display: inline-block;
+}
+
+.course-hero__time-end {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--ink-3);
+}
+
+.course-hero__phase-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(31, 26, 46, 0.08);
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  text-transform: uppercase;
+}
+
+.course-hero__phase-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--seal);
+}
+
+/* Main Photographic Visualizer Frame */
+.course-hero__frame {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+  max-height: 480px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: 0 30px 70px -25px rgba(43, 36, 80, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.8);
+  background: #f0eae1;
+}
+
+/* Stacked crossfade images */
+.course-hero__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.course-hero__img--active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.course-hero__img--inactive {
+  opacity: 0;
+  transform: scale(1.04);
+  z-index: 1;
+}
+
+/* Image Frame Overlays */
+.course-hero__overlay-top {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.course-hero__meta-pill {
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.02em;
+}
+
+.course-hero__overlay-bottom {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 5;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.course-hero__cam-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(232, 85, 58, 0.1);
+  color: var(--seal);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.course-hero__photo-text {
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.course-hero__photo-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--seal);
+  margin-bottom: 0.15rem;
+}
+
+/* Horizontal Progress Navigation Dots below frame */
+.course-hero__nav-dots {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(31, 26, 46, 0.08);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.course-hero__nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--r-pill);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.course-hero__nav-btn:hover {
+  background: rgba(31, 26, 46, 0.06);
+}
+
+.course-hero__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-line);
+  transition: all 0.35s var(--ease-out);
+}
+
+.course-hero__nav-btn--active .course-hero__dot {
+  background: var(--seal);
+  transform: scale(1.4);
+  box-shadow: 0 0 0 4px rgba(232, 85, 58, 0.2);
+}
+
+.course-hero__nav-time {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--ink-3);
+  transition: color 0.3s ease;
+}
+
+.course-hero__nav-btn--active .course-hero__nav-time {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ── Right Column: The Sequence of Stop Cards ─────────────── */
+.course__stops-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .course__stops-col {
+    gap: 4.5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+/* Individual Stop Card */
+.course-stop {
+  position: relative;
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 16px 40px -20px rgba(60, 40, 90, 0.12), 0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.52) 100%);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.4s;
+  scroll-margin-top: 130px;
+}
+
+/* Active stop highlight vs dimming on desktop */
+@media (min-width: 1024px) {
+  .course-stop--active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 28px 65px -25px rgba(60, 40, 90, 0.22), 0 2px 0 rgba(255, 255, 255, 0.95) inset;
+    border-color: rgba(255, 255, 255, 0.95);
+  }
+
+  .course-stop--inactive {
+    opacity: 0.48;
+    transform: translateY(0);
+    filter: grayscale(12%);
+  }
+
+  .course-stop--inactive:hover {
+    opacity: 0.88;
+    filter: none;
+  }
+}
+
+/* Optional Stop: Special Dashed Border & Tone */
+.course-stop--optional {
+  border: 2px dashed rgba(191, 227, 211, 0.95);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.78) 0%, rgba(191, 227, 211, 0.22) 100%);
+}
+
+.course-stop--optional:hover {
+  border-color: var(--jade);
+}
+
+/* Stop Card Header */
+.course-stop__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.course-stop__time-group {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+}
+
+.course-stop__time {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+
+.course-stop__chapter {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--r-pill);
+  background: rgba(31, 26, 46, 0.06);
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.course-stop__opt-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--r-pill);
+  background: rgba(232, 85, 58, 0.09);
+  border: 1px solid rgba(232, 85, 58, 0.22);
+  color: var(--seal);
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Stop Card Body */
+.course-stop__place-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.course-stop__place-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--seal);
+}
+
+.course-stop__place {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.course-stop__title {
+  font-family: var(--font-serif-kr);
+  font-size: clamp(1.5rem, 2vw, 1.95rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+.course-stop__desc {
+  font-family: var(--font-sans);
+  font-size: clamp(0.98rem, 1.05vw, 1.08rem);
+  line-height: 1.8;
+  color: var(--ink-2);
+  margin-bottom: 1.5rem;
+  word-break: keep-all;
+}
+
+/* Mobile Inline Imagery (Hidden on Desktop) */
+.course-stop__mobile-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px -10px rgba(43, 36, 80, 0.18);
+}
+
+.course-stop__mobile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 1024px) {
+  .course-stop__mobile-img {
+    display: none;
+  }
+}
+
+/* Photo Point Indicator Box */
+.course-stop__photo-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(31, 26, 46, 0.08);
+}
+
+.course-stop__photo-icon {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: rgba(232, 85, 58, 0.08);
+  color: var(--seal);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.course-stop__photo-body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.course-stop__photo-label {
+  display: block;
+  font-weight: 700;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--seal);
+  margin-bottom: 0.15rem;
+}
+
+/* Optional Stop CTA trigger */
+.course-stop__opt-action {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(31, 26, 46, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.course-stop__opt-hint {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.course-stop__opt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--seal);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.course-stop__opt-btn:hover {
+  opacity: 0.75;
+}
+
+/* ── Mobile Vertical Timeline Accents ─────────────────────── */
+@media (max-width: 1023px) {
+  .course__stops-col {
+    position: relative;
+    padding-left: 1.8rem;
+    border-left: 2px dashed rgba(31, 26, 46, 0.14);
+  }
+
+  .course-stop::before {
+    content: '';
+    position: absolute;
+    left: -2.35rem;
+    top: 2.2rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 3px solid var(--seal);
+    box-shadow: 0 0 0 3px rgba(232, 85, 58, 0.15);
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .course-hero__lighting-halo,
+  .course-hero__img,
+  .course-stop {
+    transition: none !important;
+  }
+}

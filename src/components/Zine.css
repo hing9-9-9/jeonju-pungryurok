@@ -1,0 +1,2202 @@
+/* ─────────────────────────────────────────────────────────────
+   Zine.css — Accordion Zine Book 《전주 풍류록》
+   Hanji paper · Woodblock craft · 3D Accordion folding screen
+   ───────────────────────────────────────────────────────────── */
+
+.zine-font-book {
+  font-family: var(--font-book), var(--font-serif-kr), serif !important;
+}
+
+.zine-section {
+  position: relative;
+  padding-block: clamp(4.5rem, 8vw, 8.5rem);
+  overflow: hidden;
+  background: transparent;
+}
+
+.zine__container {
+  position: relative;
+  z-index: 2;
+  max-width: 1480px;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.zine__header {
+  text-align: center;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.zine__eyebrow {
+  margin-bottom: 1.2rem;
+}
+
+.zine__title {
+  font-family: var(--font-serif-kr);
+  font-size: clamp(2.1rem, 4.2vw, 3.6rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  margin-bottom: 1.3rem;
+  word-break: keep-all;
+}
+
+.zine__title-line {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .zine__title-line:first-child {
+    white-space: nowrap;
+  }
+}
+
+.zine__lead {
+  max-width: 680px;
+  margin-inline: auto;
+  color: var(--ink-2);
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-size: clamp(1rem, 1.15vw, 1.18rem);
+}
+
+/* ── Controls & Mode Toggles ──────────────────────────────── */
+.zine__control-bar-wrapper {
+  margin-bottom: 1.4rem;
+}
+
+.zine__controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 0.6rem 1.3rem;
+  border-radius: var(--r-pill);
+  box-shadow: 0 16px 40px -14px rgba(31, 26, 46, 0.12);
+}
+
+.zine__mode-toggles {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(31, 26, 46, 0.05);
+  padding: 0.25rem;
+  border-radius: var(--r-pill);
+}
+
+.zine__mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--r-pill);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: all 0.3s var(--ease-out);
+}
+
+.zine__mode-btn:hover {
+  color: var(--ink);
+}
+
+.zine__mode-btn.is-active {
+  background: var(--white);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(31, 26, 46, 0.08);
+}
+
+.zine__btn-icon {
+  font-size: 0.95em;
+  color: var(--seal);
+}
+
+.zine__fold-slider-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+  padding-inline: 0.5rem;
+  border-left: 1px solid var(--ink-line);
+}
+
+.zine__fold-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.zine__fold-value {
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 2.2ch;
+}
+
+.zine__range-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 90px;
+  height: 4px;
+  background: var(--ink-line);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.zine__range-input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--seal);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(232, 85, 58, 0.35);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.zine__range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.zine__range-input--sm {
+  width: 110px;
+}
+
+.zine__fold-toggle-btn {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--r-pill);
+  background: rgba(31, 26, 46, 0.06);
+  color: var(--ink-2);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.zine__fold-toggle-btn:hover {
+  background: rgba(31, 26, 46, 0.12);
+  color: var(--ink);
+}
+
+.zine__reset-btn {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--r-pill);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.zine__reset-btn:hover {
+  color: var(--seal);
+  background: rgba(232, 85, 58, 0.08);
+}
+
+/* ── Nav Pills (Quick Page Select) ────────────────────────── */
+.zine__nav-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 0.3rem;
+}
+
+.zine__nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  font-size: 0.82rem;
+  color: var(--ink-2);
+  transition: all 0.3s var(--ease-out);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.zine__nav-pill:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.zine__nav-pill.is-active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+  box-shadow: 0 4px 14px rgba(31, 26, 46, 0.2);
+}
+
+.zine__pill-no {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.95em;
+  opacity: 0.85;
+}
+
+/* ── Stage & 3D Perspective Setup ─────────────────────────── */
+.zine__stage-wrapper {
+  position: relative;
+  width: 100%;
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+/* Floating decoratives around the workbench */
+.zine__decorations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.zine__decor-polaroid {
+  position: absolute;
+  background: #ffffff;
+  padding: 8px 8px 20px 8px;
+  border-radius: 4px;
+  box-shadow: 0 20px 45px -12px rgba(31, 26, 46, 0.2), 0 2px 6px rgba(31, 26, 46, 0.08);
+  pointer-events: auto;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.zine__decor-polaroid:hover {
+  transform: scale(1.08) rotate(0deg) !important;
+  z-index: 15;
+}
+
+.zine__decor-polaroid--table {
+  top: -24px;
+  left: 0;
+  width: 155px;
+}
+
+.zine__decor-polaroid--woodblock {
+  bottom: -24px;
+  right: 0;
+  width: 135px;
+}
+
+.zine__polaroid-img-wrap {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #f0ebe2;
+}
+
+.zine__decor-polaroid--woodblock .zine__polaroid-img-wrap {
+  aspect-ratio: 1/1;
+}
+
+.zine__polaroid-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.zine__decor-polaroid:hover .zine__polaroid-img-wrap img {
+  transform: scale(1.08);
+}
+
+.zine__polaroid-caption {
+  font-family: var(--font-serif-kr);
+  font-size: 0.7rem;
+  color: var(--ink-2);
+  margin-top: 6px;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+/* Washi Tape Strips */
+.zine__washi-tape {
+  position: absolute;
+  width: 58px;
+  height: 18px;
+  background: rgba(247, 222, 190, 0.85);
+  box-shadow: 0 1px 3px rgba(31, 26, 46, 0.12);
+  z-index: 3;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6px, #000 calc(100% - 6px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 6px, #000 calc(100% - 6px), transparent 100%);
+}
+
+.zine__washi-tape--top-center {
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+}
+
+.zine__washi-tape--top-left {
+  top: -8px;
+  left: -8px;
+  transform: rotate(-35deg);
+}
+
+.zine__washi-tape--top-right {
+  top: -8px;
+  right: -8px;
+  transform: rotate(35deg);
+}
+
+.zine__washi-tape--mint {
+  background: rgba(198, 240, 220, 0.88);
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%) rotate(3deg);
+}
+
+/* Floating Seal Stamp */
+.zine__decor-seal {
+  position: absolute;
+  top: -16px;
+  right: 40px;
+  pointer-events: none;
+  z-index: 11;
+}
+
+.zine__seal-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 2.5px solid var(--seal);
+  border-radius: 6px;
+  color: var(--seal);
+  font-family: var(--font-serif-kr);
+  font-weight: 900;
+  font-size: 0.9rem;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(232, 85, 58, 0.25), 0 8px 24px rgba(232, 85, 58, 0.18);
+  padding: 3px;
+}
+
+.zine__seal-char {
+  grid-column: 1;
+}
+
+.zine__seal-sub {
+  grid-column: 2;
+}
+
+/* ── Desktop 3D Accordion Stage ───────────────────────────── */
+.zine__desktop-stage {
+  position: relative;
+  width: 100%;
+}
+
+.zine__desktop-stage--accordion {
+  perspective: 2200px;
+  perspective-origin: 50% 45%;
+}
+
+.zine__book-strip {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transition: transform 0.6s var(--ease-out);
+  padding-block: 1.5rem;
+}
+
+.zine__book-strip--accordion {
+  gap: 0;
+}
+
+.zine__book-strip--flat {
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 2rem;
+  justify-content: flex-start;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+}
+
+/* Individual Accordion Panel */
+.zine__accordion-panel {
+  position: relative;
+  flex-shrink: 0;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transition: transform 0.65s var(--ease-out), filter 0.4s var(--ease-out);
+  cursor: pointer;
+  margin-right: -2px; /* Seamless fold alignment */
+}
+
+/* 1~7면 동일 표준 규격: 동일한 종이 띠지에서 연속 접기 재단되는 물리적 규격 */
+.zine__accordion-panel--standard {
+  width: 175px;
+}
+
+/* 8면 엽서: 단독 엽서 비율 허용 */
+.zine__accordion-panel--postcard {
+  width: 240px;
+}
+
+.zine__accordion-panel:nth-child(even) {
+  transform-origin: right center;
+}
+
+.zine__book-strip--flat .zine__accordion-panel--standard {
+  width: 250px;
+  min-width: 250px;
+}
+
+.zine__book-strip--flat .zine__accordion-panel--postcard {
+  width: 330px;
+  min-width: 330px;
+}
+
+.zine__accordion-panel:hover {
+  filter: brightness(1.02);
+  z-index: 5;
+}
+
+.zine__accordion-panel.is-selected {
+  z-index: 6;
+}
+
+/* Realistic Accordion Lighting & Fold Shadow at Hinges */
+.zine__panel-lighting {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  border-radius: 4px;
+  mix-blend-mode: multiply;
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.zine__panel-lighting--even {
+  background: linear-gradient(
+    to right,
+    rgba(31, 26, 46, 0.08) 0%,
+    rgba(255, 255, 255, 0.08) 35%,
+    rgba(31, 26, 46, 0.04) 95%,
+    rgba(31, 26, 46, 0.12) 100%
+  );
+}
+
+.zine__panel-lighting--odd {
+  background: linear-gradient(
+    to right,
+    rgba(31, 26, 46, 0.12) 0%,
+    rgba(31, 26, 46, 0.04) 5%,
+    rgba(255, 255, 255, 0.12) 65%,
+    rgba(31, 26, 46, 0.06) 100%
+  );
+}
+
+/* ── Focus Mode (Inspection & Easy Writing) ────────────────── */
+.zine__focus-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.zine__focus-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding-inline: 0.5rem;
+}
+
+.zine__focus-nav-btn {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  box-shadow: 0 4px 16px rgba(31, 26, 46, 0.08);
+  transition: all 0.25s var(--ease-out);
+}
+
+.zine__focus-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.zine__focus-nav-btn:not(:disabled):hover {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateY(-1px);
+}
+
+.zine__focus-page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.zine__focus-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-pill);
+  background: var(--seal);
+  color: var(--white);
+}
+
+.zine__focus-page-title h3 {
+  font-family: var(--font-serif-kr);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.zine__page-card--focus {
+  width: 100% !important;
+  max-width: 520px;
+  min-height: 640px;
+  margin-inline: auto;
+  box-shadow: 0 35px 80px -20px rgba(40, 25, 60, 0.22), 0 2px 8px rgba(31, 26, 46, 0.06);
+}
+
+.zine__focus-hint {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  margin-top: 1.2rem;
+  text-align: center;
+}
+
+/* ── Common Page Card Structure ───────────────────────────── */
+.zine__page-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  border-radius: 6px;
+  background-color: #fffdf9;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.88), rgba(250, 243, 233, 0.75)),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(31, 26, 46, 0.007) 3px, rgba(31, 26, 46, 0.007) 6px);
+  border: 1px solid rgba(31, 26, 46, 0.16);
+  box-shadow: 
+    0 16px 40px -14px rgba(31, 26, 46, 0.16),
+    0 2px 4px rgba(31, 26, 46, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+/* Pastel Washes by Page Tone */
+.zine__page-card[data-tone='butter'] {
+  background-color: #fdfaf0;
+  box-shadow: 0 16px 40px -14px rgba(210, 180, 100, 0.2), inset 0 0 80px rgba(255, 240, 179, 0.25);
+}
+
+.zine__page-card[data-tone='peach'] {
+  background-color: #fef7f2;
+  box-shadow: 0 16px 40px -14px rgba(210, 140, 110, 0.18), inset 0 0 80px rgba(255, 211, 191, 0.22);
+}
+
+.zine__page-card[data-tone='mint'] {
+  background-color: #f5fcf8;
+  box-shadow: 0 16px 40px -14px rgba(110, 190, 150, 0.18), inset 0 0 80px rgba(198, 240, 220, 0.25);
+}
+
+.zine__page-card[data-tone='rose'] {
+  background-color: #fdf5f8;
+  box-shadow: 0 16px 40px -14px rgba(210, 120, 160, 0.18), inset 0 0 80px rgba(255, 203, 225, 0.22);
+}
+
+.zine__page-card[data-tone='lilac'] {
+  background-color: #f9f6fd;
+  box-shadow: 0 16px 40px -14px rgba(160, 130, 220, 0.18), inset 0 0 80px rgba(217, 200, 255, 0.25);
+}
+
+.zine__page-card[data-tone='sky'] {
+  background-color: #f5f9fd;
+  box-shadow: 0 16px 40px -14px rgba(120, 160, 220, 0.18), inset 0 0 80px rgba(198, 224, 255, 0.25);
+}
+
+.zine__card-inner {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+}
+
+/* Traditional Inner Ruled Border */
+.zine-page__inner-rule {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(31, 26, 46, 0.14);
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.38);
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
+.zine-page__inner-rule--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 14px;
+}
+
+/* Page Top Meta */
+.zine-page__top-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(31, 26, 46, 0.1);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.zine-page__chapter-num {
+  font-size: 0.98rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.zine-page__chapter-label {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.zine-page__heading {
+  font-size: 0.96rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+}
+
+/* Interactive Inputs & Textareas */
+.zine-input {
+  font-family: var(--font-serif-kr);
+  font-size: 0.88rem;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(31, 26, 46, 0.3);
+  padding: 2px 4px;
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.zine-input:focus {
+  border-bottom-color: var(--seal);
+  border-bottom-style: solid;
+  background: rgba(232, 85, 58, 0.04);
+}
+
+.zine-input::placeholder {
+  color: rgba(31, 26, 46, 0.35);
+  font-style: italic;
+}
+
+.zine-textarea {
+  font-family: var(--font-serif-kr);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px dashed rgba(31, 26, 46, 0.2);
+  border-radius: 4px;
+  padding: 6px 8px;
+  width: 100%;
+  resize: none;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.zine-textarea:focus {
+  border-color: var(--seal);
+  border-style: solid;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Panel 1: Cover Page (Wanpanbon Style) ────────────────── */
+.zine-page--cover {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f3e8;
+  background-image: radial-gradient(rgba(139, 119, 101, 0.07) 1px, transparent 0);
+  background-size: 10px 10px;
+}
+
+.zine-wanpan-border {
+  border: 2.5px double #4a3525;
+  outline: 1px solid rgba(74, 53, 37, 0.35);
+  outline-offset: -5px;
+  height: 100%;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.zine-cover__top-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: #5a534e;
+  border-bottom: 1px solid rgba(74, 53, 37, 0.2);
+  padding-bottom: 4px;
+}
+
+.zine-cover__woodblock-tag {
+  font-weight: 700;
+  color: #4a3525;
+}
+
+.zine-cover__hanja-eyebrow {
+  letter-spacing: 0.15em;
+  color: #8c6d46;
+}
+
+.zine-cover__center-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin-block: 8px auto;
+}
+
+/* Iconic Vertical Wanpan Title Box */
+.zine-wanpan-title-box {
+  border: 1.5px solid #221e1d;
+  background: #fffdf9;
+  padding: 12px 8px;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: var(--font-book), 'Nanum Myeongjo', serif;
+  font-weight: 800;
+  font-size: 1.12rem;
+  letter-spacing: 4px;
+  box-shadow: 2px 2px 0px #4a3525;
+  color: #221e1d;
+  line-height: 1.25;
+  margin-block: 6px 8px;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.zine-wanpan-title-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0px #4a3525;
+}
+
+.zine-cover__hanja-sub {
+  font-size: 0.65rem;
+  color: #8c6d46;
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+}
+
+.zine-cover__prompt-box {
+  width: 100%;
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: #221e1d;
+  text-align: center;
+}
+
+.zine-cover__prompt-inner {
+  display: inline-block;
+  line-height: 1.6;
+}
+
+.zine-input--cover-topic {
+  display: inline-block;
+  min-width: 65px;
+  max-width: 110px;
+  border: none;
+  border-bottom: 1px solid #5a534e;
+  text-align: center;
+  font-weight: 700;
+  color: #b8332a;
+  padding: 0 4px;
+  background: transparent;
+}
+
+.zine-cover__bottom-colophon {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid #c8bfa8;
+  padding-top: 6px;
+  margin-top: auto;
+}
+
+.zine-cover__meta-left {
+  font-size: 0.62rem;
+  color: #5a534e;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.zine-cover__author-line {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.zine-input--cover-author {
+  border: none;
+  border-bottom: 1px solid #5a534e;
+  font-weight: 700;
+  color: #221e1d;
+  width: 65px;
+  display: inline-block;
+  padding: 0 2px;
+  background: transparent;
+}
+
+.zine-cover__author-in {
+  color: #8c827a;
+  font-size: 0.6rem;
+}
+
+.zine-cover__stamp {
+  border: 1.5px solid #b8332a;
+  color: #b8332a;
+  font-weight: 700;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+  transform: rotate(-4deg);
+  border-radius: 2px;
+  background: rgba(184, 51, 42, 0.05);
+}
+
+.zine-cover__publisher-tag {
+  font-size: 0.56rem;
+  color: #8c827a;
+  letter-spacing: 0.02em;
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* ── Panel 2: Prologue ────────────────────────────────────── */
+.zine-prologue__photo-mount {
+  position: relative;
+  width: 125px;
+  margin-inline: auto;
+  margin-block: 6px 12px;
+  padding: 5px;
+  background: #ffffff;
+  box-shadow: 0 8px 18px -6px rgba(31, 26, 46, 0.12);
+  border-radius: 3px;
+}
+
+.zine-photo-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(31, 26, 46, 0.4);
+  pointer-events: none;
+}
+
+.zine-photo-corner--tl { top: -2px; left: -2px; border-top: 2px solid; border-left: 2px solid; }
+.zine-photo-corner--tr { top: -2px; right: -2px; border-top: 2px solid; border-right: 2px solid; }
+.zine-photo-corner--bl { bottom: -2px; left: -2px; border-bottom: 2px solid; border-left: 2px solid; }
+.zine-photo-corner--br { bottom: -2px; right: -2px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.zine-prologue__photo-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: #eee6d8;
+  border-radius: 2px;
+}
+
+.zine-prologue__photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zine-prologue__photo-badge {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  background: rgba(31, 26, 46, 0.7);
+  color: #ffffff;
+  font-size: 0.58rem;
+  padding: 1px 4px;
+  border-radius: 2px;
+  backdrop-filter: blur(4px);
+}
+
+.zine-prologue__photo-desc {
+  font-size: 0.6rem;
+  color: var(--ink-3);
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.25;
+}
+
+.zine-prologue__prompt-box {
+  background: rgba(255, 255, 255, 0.45);
+  padding: 8px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.zine-prologue__sentence {
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.zine-input-inline-wrap {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.zine-input--inline {
+  display: inline-block;
+  width: 65px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--seal);
+  padding: 1px 2px;
+  font-size: 0.82rem;
+}
+
+.zine-input-inline-wrap--wide .zine-input--inline {
+  width: 110px;
+}
+
+.zine-prologue__ambient-box {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px dashed rgba(74, 53, 37, 0.25);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: #4a3525;
+  margin-bottom: 8px;
+}
+
+.zine-input--temp {
+  width: 75px;
+  font-weight: 600;
+  color: #b8332a;
+}
+
+.zine-input--bgm {
+  width: 140px;
+  font-weight: 600;
+  color: #b8332a;
+}
+
+.zine-prologue__signature-row {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-top: 1px dashed rgba(31, 26, 46, 0.15);
+  padding-top: 6px;
+  font-size: 0.74rem;
+}
+
+.zine-prologue__sig-label {
+  color: var(--ink-3);
+}
+
+.zine-prologue__sig-name {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.zine-prologue__sig-date {
+  color: var(--ink-3);
+  font-size: 0.7rem;
+}
+
+/* ── Panel 3: Chapter 1 ───────────────────────────────────── */
+.zine-page--chapter1 {
+  position: relative;
+}
+
+.zine-ch1__hanja-bg {
+  position: absolute;
+  top: 36px;
+  right: 12px;
+  font-family: var(--font-serif-kr);
+  font-size: 5rem;
+  line-height: 1;
+  font-weight: 900;
+  color: rgba(31, 26, 46, 0.04);
+  pointer-events: none;
+}
+
+.zine-ch1__prompt-lead {
+  font-family: var(--font-serif-kr);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin-bottom: 8px;
+}
+
+.zine-ch1__woodplate-area {
+  position: relative;
+  background: #f4ecdc;
+  border: 1px solid #dcd1be;
+  border-radius: 4px;
+  padding: 8px 10px;
+  box-shadow: inset 0 2px 6px rgba(31, 26, 46, 0.06);
+  margin-bottom: 12px;
+}
+
+.zine-textarea--wood {
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  color: #2e261a;
+  padding: 0;
+  font-size: 0.8rem;
+}
+
+.zine-ch1__woodplate-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.62rem;
+  color: #8c7e6c;
+  margin-top: 4px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding-top: 3px;
+}
+
+.zine-ch1__wood-seal {
+  font-weight: 700;
+  color: var(--seal);
+}
+
+.zine-ch1__stamp-mount {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px dashed rgba(31, 26, 46, 0.2);
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+
+.zine-ch1__stamp-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zine-ch1__real-stamp {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--seal);
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  color: var(--seal);
+  font-family: var(--font-serif-kr);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.15;
+  transform: rotate(-3deg);
+  background: rgba(232, 85, 58, 0.06);
+}
+
+.zine-ch1__stamp-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.zine-ch1__stamp-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.zine-ch1__stamp-sub {
+  font-size: 0.64rem;
+  color: var(--ink-3);
+  line-height: 1.3;
+}
+
+.zine-ch1__scene-prompt {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(216, 208, 192, 0.6);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: #4a3525;
+  margin-top: 8px;
+}
+
+.zine-input--scene {
+  width: 100%;
+  margin-top: 2px;
+  font-weight: 600;
+  color: #b8332a;
+}
+
+.zine-page__footer-note {
+  font-size: 0.62rem;
+  color: var(--ink-3);
+  margin-top: auto;
+  text-align: center;
+  padding-top: 6px;
+}
+
+/* ── Panel 4: Chapter 2 Center Spread ─────────────────────── */
+/* ── Panel 4: Chapter 2A (동문길 만찬 주안상 - Center Spread Left) ──────── */
+.zine-page--chapter2-menu {
+  position: relative;
+  background-color: #fcf9f2;
+}
+
+.spread-left {
+  border-right: 1px dotted #c5a059 !important;
+}
+
+.spread-right {
+  background-color: #fcf9f2;
+}
+
+.zine-ch2__menu-card {
+  position: relative;
+  background: #1f1b18;
+  color: #f2ece1;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid #4a3525;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
+  margin-block: 6px 8px;
+  font-family: var(--font-book), var(--font-serif-kr), serif !important;
+}
+
+.zine-ch2__menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.35);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.zine-ch2__menu-en-title {
+  font-size: 0.64rem;
+  letter-spacing: 1.5px;
+  color: #c5a059;
+}
+
+.zine-ch2__menu-stamp {
+  font-family: var(--font-book), serif;
+  font-weight: 700;
+  color: #c5a059;
+  font-size: 0.62rem;
+  border: 1px solid #c5a059;
+  padding: 1px 3px;
+  border-radius: 2px;
+  line-height: 1.1;
+}
+
+.zine-ch2__menu-korean-title {
+  font-family: var(--font-book), 'Nanum Myeongjo', serif !important;
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #fffdf9;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+.zine-ch2__menu-sub-desc {
+  font-family: var(--font-book), serif !important;
+  font-size: 0.62rem;
+  color: #b8afa3;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.zine-ch2__menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-book), serif !important;
+}
+
+.zine-ch2__menu-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.72rem;
+  border-bottom: 1px dashed rgba(197, 160, 89, 0.18);
+  padding-bottom: 5px;
+}
+
+.zine-ch2__menu-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.zine-ch2__course-badge {
+  flex-shrink: 0;
+  background: #c5a059;
+  color: #1f1b18;
+  font-family: var(--font-book), serif !important;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 2px;
+  line-height: 1.2;
+}
+
+.zine-ch2__course-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+  font-family: var(--font-book), serif !important;
+}
+
+.zine-ch2__course-info strong {
+  color: #fffdf9;
+  font-family: var(--font-book), serif !important;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.zine-ch2__course-info span {
+  color: #e2c792;
+  font-family: var(--font-book), serif !important;
+  font-size: 0.66rem;
+}
+
+.zine-ch2__menu-footer {
+  margin-top: 6px;
+  font-family: var(--font-book), serif !important;
+  font-size: 0.6rem;
+  color: #c5a059;
+  text-align: center;
+  border-top: 1px dashed rgba(197, 160, 89, 0.25);
+  padding-top: 4px;
+}
+
+.zine-ch2__pungryu-prompt {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(216, 208, 192, 0.8);
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.zine-ch2__pungryu-title {
+  color: #4a3525;
+  margin-bottom: 2px;
+}
+
+.zine-input--pungryu {
+  width: 100%;
+  display: inline-block;
+  font-weight: 600;
+  color: #b8332a;
+}
+
+.zine-ch2__footer-guide {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.62rem;
+  color: #8c827a;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.zine-ch2__mini-stamp {
+  border: 1px solid #4a3525;
+  color: #4a3525;
+  font-size: 0.58rem;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 2px;
+  transform: rotate(-3deg);
+}
+
+/* ── Panel 5: Chapter 2B (미식 시음 노트 - 4-Axis Taste Star Rating) ──── */
+.zine-page--chapter2-tasting {
+  position: relative;
+  background-color: #fcf9f2;
+}
+
+.zine-tasting__dish-drink-box {
+  background: #fffdf9;
+  border: 1px solid #d8d0c0;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.zine-tasting__box-title {
+  color: #4a3525;
+  margin-bottom: 3px;
+}
+
+.zine-tasting__input-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.zine-input--dish,
+.zine-input--drink {
+  flex: 1;
+  font-weight: 600;
+  color: #b8332a;
+}
+
+/* 4-Axis Taste Star Rating Box */
+.zine-taste-graph {
+  background: #fffdf9;
+  border: 1px solid #d8d0c0;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-block: 6px;
+}
+
+.zine-taste-graph__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid rgba(216, 208, 192, 0.6);
+  padding-bottom: 3px;
+  margin-bottom: 4px;
+}
+
+.zine-taste-graph__title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #4a3525;
+}
+
+.zine-taste-graph__sub {
+  font-size: 0.68rem;
+  color: #8c827a;
+}
+
+.zine-taste-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.zine__page-card--focus .zine-taste-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+.zine-taste-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: #221e1d;
+  background: rgba(234, 227, 210, 0.28);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.zine-taste-label {
+  font-weight: 700;
+  font-size: 0.66rem;
+  color: #4a3525;
+  white-space: nowrap;
+}
+
+.zine-star-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.zine-star-btn {
+  background: none;
+  border: none;
+  padding: 0 0.5px;
+  font-size: 0.74rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease-out);
+}
+
+.zine-star-btn:hover {
+  transform: scale(1.3);
+}
+
+.zine-star-btn.is-filled {
+  color: #b8332a;
+  text-shadow: 0 1px 2px rgba(184, 51, 42, 0.2);
+}
+
+.zine-star-btn.is-empty {
+  color: #b8afa3;
+}
+
+.zine-taste-val {
+  font-size: 0.62rem;
+  color: #8c6d46;
+  min-width: 2.2ch;
+  text-align: right;
+}
+
+/* Focus mode enhancements for Cover & Tasting */
+.zine__page-card--focus .zine-wanpan-title-box {
+  font-size: 1.35rem;
+  padding: 18px 12px;
+  letter-spacing: 6px;
+  margin-block: 10px 14px;
+}
+
+.zine__page-card--focus .zine-wanpan-border {
+  padding: 24px 20px;
+}
+
+.zine__page-card--focus .zine-cover__top-header {
+  font-size: 0.75rem;
+  padding-bottom: 8px;
+}
+
+.zine__page-card--focus .zine-cover__hanja-sub {
+  font-size: 0.78rem;
+  letter-spacing: 0.25em;
+  margin-bottom: 16px;
+}
+
+.zine__page-card--focus .zine-cover__prompt-box {
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.zine__page-card--focus .zine-input--cover-topic {
+  min-width: 90px;
+  font-size: 1rem;
+}
+
+.zine__page-card--focus .zine-cover__bottom-colophon {
+  padding-top: 10px;
+}
+
+.zine__page-card--focus .zine-cover__meta-left {
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.zine__page-card--focus .zine-input--cover-author {
+  width: 90px;
+  font-size: 0.85rem;
+}
+
+.zine__page-card--focus .zine-cover__stamp {
+  font-size: 0.75rem;
+  padding: 4px 6px;
+}
+
+.zine-tasting__flavor-box {
+  background: #fffdf9;
+  border: 1px solid #d8d0c0;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-block: 4px 6px;
+}
+
+.zine-textarea--lines {
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 17px,
+    rgba(216, 208, 192, 0.6) 18px
+  );
+  line-height: 18px;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 0.72rem;
+  color: #221e1d;
+  resize: none;
+}
+
+.zine-tasting__warm-words-box {
+  background: #fffdf9;
+  border-left: 2.5px solid #b8332a;
+  border-top: 1px solid #d8d0c0;
+  border-right: 1px solid #d8d0c0;
+  border-bottom: 1px solid #d8d0c0;
+  border-radius: 0 4px 4px 0;
+  padding: 6px 8px;
+  font-size: 0.7rem;
+  margin-top: auto;
+}
+
+.zine-tasting__warm-title {
+  color: #b8332a;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.zine-tasting__warm-sub {
+  color: #5a534e;
+  font-size: 0.64rem;
+  margin-bottom: 3px;
+}
+
+.zine-tasting__quote-line {
+  font-size: 0.76rem;
+  color: #221e1d;
+  font-weight: 600;
+}
+
+.zine-input--quote {
+  width: calc(100% - 30px);
+  color: #b8332a;
+  font-weight: 700;
+}
+
+/* ── Panel 5: Chapter 3 Center Spread ─────────────────────── */
+.zine-page--chapter3 {
+  position: relative;
+}
+
+.zine-ch3__bookstore-photo {
+  position: relative;
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 4px;
+  box-shadow: 0 8px 20px -8px rgba(31, 26, 46, 0.12);
+  margin-bottom: 10px;
+}
+
+.zine-ch3__bookstore-photo img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.zine-ch3__photo-caption {
+  font-size: 0.64rem;
+  color: var(--ink-2);
+  text-align: center;
+  margin-top: 5px;
+}
+
+.zine-ch3__prompt-card {
+  background: rgba(255, 255, 255, 0.45);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.zine-ch3__prompt-text {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+/* Authentic Korean Manuscript Grid (원고지) */
+.zine-ch3__manuscript-wrap {
+  background: #ffffff;
+  border: 1px solid rgba(80, 140, 100, 0.35);
+  border-radius: 4px;
+  padding: 8px;
+  box-shadow: inset 0 0 0 1px rgba(80, 140, 100, 0.15);
+  margin-bottom: 8px;
+}
+
+.zine-ch3__manuscript-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #3b7050;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(80, 140, 100, 0.25);
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+}
+
+.zine-ch3__wongoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 1px;
+  background: rgba(80, 140, 100, 0.2);
+  border: 1px solid rgba(80, 140, 100, 0.35);
+  padding: 1px;
+}
+
+.zine-ch3__wongoji-cell {
+  background: #ffffff;
+  aspect-ratio: 1/1;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.zine-ch3__wongoji-char {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.zine-ch3__input-wrap {
+  margin-top: 6px;
+}
+
+.zine-ch3__input-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: 2px;
+}
+
+.zine-textarea--manuscript {
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 0.78rem;
+}
+
+.zine-ch3__rx-seal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px dashed rgba(31, 26, 46, 0.2);
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-top: auto;
+}
+
+.zine-ch3__seal-ring {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1.5px dashed #4b4279;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #4b4279;
+  font-family: var(--font-serif-kr);
+  font-size: 0.56rem;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.zine-ch3__seal-core {
+  font-weight: 800;
+  font-size: 0.66rem;
+}
+
+.zine-ch3__seal-desc {
+  font-size: 0.7rem;
+  color: var(--ink-2);
+  line-height: 1.35;
+}
+
+/* ── Panel 6: Detachable Postcard ─────────────────────────── */
+.zine-page--postcard {
+  position: relative;
+  display: flex;
+  flex: 1;
+}
+
+/* Detachable Perforation Line (미싱선) */
+.zine-postcard__perforation {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 14px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.zine-postcard__scissors {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  transform: rotate(90deg);
+}
+
+.zine-postcard__perf-line {
+  flex: 1;
+  width: 1px;
+  border-left: 2px dashed rgba(31, 26, 46, 0.35);
+  margin-block: 4px;
+}
+
+.zine-postcard__perf-tag {
+  writing-mode: vertical-rl;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.zine-postcard__body {
+  flex: 1;
+  margin-left: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.zine-postcard__card-surface {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(31, 26, 46, 0.12);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.zine-postcard__header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.zine-postcard__main-tag {
+  font-size: 1.35rem;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.zine-postcard__sub-prompt {
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+/* Postage Stamp Box */
+.zine-postcard__stamp-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.zine-postcard__stamp-serration {
+  width: 42px;
+  height: 50px;
+  background: #ffffff;
+  border: 1.5px dashed rgba(31, 26, 46, 0.3);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(31, 26, 46, 0.08);
+}
+
+.zine-postcard__stamp-kr {
+  font-size: 0.55rem;
+  color: var(--ink-3);
+}
+
+.zine-postcard__stamp-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--seal);
+}
+
+.zine-postcard__stamp-motif {
+  font-family: var(--font-serif-kr);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.zine-postcard__stamp-caption {
+  font-size: 0.56rem;
+  color: var(--ink-3);
+}
+
+.zine-postcard__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.zine-postcard__message-col {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.zine-textarea--postcard {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  line-height: 1.65;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-radius: 0;
+  border-bottom: 1px dashed rgba(31, 26, 46, 0.25);
+  padding-inline: 2px;
+}
+
+.zine-postcard__address-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px dashed rgba(31, 26, 46, 0.15);
+  padding-top: 8px;
+}
+
+.zine-postcard__field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.zine-postcard__field-label {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.zine-input--underline {
+  border-bottom: 1px solid rgba(31, 26, 46, 0.2);
+  font-size: 0.78rem;
+}
+
+.zine-postcard__postmark {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zine-postmark-circle {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid rgba(232, 85, 58, 0.6);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--seal);
+  font-size: 0.52rem;
+  font-weight: 700;
+  line-height: 1.05;
+  transform: rotate(-12deg);
+}
+
+.zine-postmark-circle strong {
+  font-size: 0.64rem;
+}
+
+.zine-postcard__fulfillment-note {
+  font-size: 0.65rem;
+  color: var(--ink-2);
+  line-height: 1.35;
+}
+
+/* ── Mobile Gallery (<820px) ──────────────────────────────── */
+.zine__mobile-stage {
+  position: relative;
+  width: 100%;
+}
+
+.zine__mobile-gallery {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-inline: max(1.25rem, calc((100vw - 330px) / 2));
+  padding-block: 1rem 1.5rem;
+  scrollbar-width: none;
+}
+
+.zine__mobile-gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.zine__mobile-gallery .zine__page-card--standard {
+  flex-shrink: 0;
+  width: 290px;
+  max-width: 78vw;
+  scroll-snap-align: center;
+  scroll-snap-stop: normal;
+}
+
+.zine__mobile-gallery .zine__page-card--postcard {
+  flex-shrink: 0;
+  width: 340px;
+  max-width: 88vw;
+  scroll-snap-align: center;
+  scroll-snap-stop: normal;
+}
+
+.zine__mobile-gallery .zine-page__inner-rule--split {
+  grid-template-columns: 1fr;
+}
+
+.zine__card-crease-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.zine__card-crease-shadow--left {
+  left: 0;
+  background: linear-gradient(to right, rgba(31, 26, 46, 0.08), transparent);
+}
+
+.zine__card-crease-shadow--right {
+  right: 0;
+  background: linear-gradient(to left, rgba(31, 26, 46, 0.08), transparent);
+}
+
+.zine__mobile-counter-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.zine__mobile-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zine__mobile-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(31, 26, 46, 0.18);
+  border: none;
+  padding: 0;
+  transition: all 0.3s var(--ease-out);
+}
+
+.zine__mobile-dot.is-active {
+  width: 22px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+}
+
+.zine__mobile-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--ink-2);
+}
+
+.zine__counter-arrow-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(31, 26, 46, 0.08);
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--ink);
+  transition: all 0.2s;
+}
+
+.zine__counter-arrow-btn:disabled {
+  opacity: 0.25;
+}
+
+.zine__counter-current {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.zine__counter-sep {
+  opacity: 0.4;
+}
+
+.zine__counter-total {
+  font-family: var(--font-display);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.zine__counter-title {
+  font-family: var(--font-serif-kr);
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  margin-left: 4px;
+}
+
+/* ── Footer Elements Below Book ───────────────────────────── */
+.zine__footer {
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  text-align: center;
+}
+
+.zine__feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.2rem;
+}
+
+.zine__feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--r-pill);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+}
+
+.zine__feature-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -12px rgba(31, 26, 46, 0.16);
+}
+
+.zine__pill-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--seal);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.zine__pill-glyph {
+  font-size: 1.15rem;
+}
+
+.zine__cta-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.zine__cta-btn {
+  font-size: 1.05rem;
+  padding: 1.15em 2.2em;
+}
+
+.zine__cta-sub {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  letter-spacing: -0.01em;
+}
+
+/* ── Responsive Queries ───────────────────────────────────── */
+@media (max-width: 1380px) {
+  .zine__decor-polaroid--table {
+    display: none;
+  }
+  .zine__decor-polaroid--woodblock {
+    display: none;
+  }
+  .zine__decor-seal {
+    display: none;
+  }
+  .zine__accordion-panel {
+    width: 165px;
+  }
+  .zine__accordion-panel--wide {
+    width: 300px;
+  }
+}
+
+@media (max-width: 820px) {
+  .zine__controls {
+    display: none;
+  }
+  .zine__nav-pills {
+    display: none;
+  }
+  .zine__decorations {
+    display: none;
+  }
+  .zine__feature-pills {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 380px;
+    margin-inline: auto;
+  }
+  .zine__feature-pill {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,265 @@
+/* ─────────────────────────────────────────────────────────────
+   Closing — 전주 심야 풍류록
+   Grand emotional finale section with atmospheric night bookstore glow
+   ───────────────────────────────────────────────────────────── */
+
+.closing {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(7rem, 16vw, 14rem);
+}
+
+/* ── Atmospheric Blurred Night Bookstore Lighting ────────── */
+.closing__atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.closing__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.65;
+  mix-blend-mode: multiply;
+  will-change: transform;
+}
+
+.closing__glow--warm {
+  top: 15%;
+  left: 20%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #ffe1a6 0%, rgba(255, 211, 191, 0) 70%);
+}
+
+.closing__glow--lavender {
+  bottom: 10%;
+  right: 15%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #d9c8ff 0%, rgba(217, 200, 255, 0) 70%);
+}
+
+.closing__glow--rose {
+  top: 40%;
+  right: 35%;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #ffd0e3 0%, rgba(255, 203, 225, 0) 70%);
+}
+
+.closing__pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(31, 26, 46, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.8;
+}
+
+/* ── Container & Glass Card ───────────────────────────────── */
+.closing__container {
+  position: relative;
+  z-index: 1;
+}
+
+.closing__content {
+  position: relative;
+  max-width: 960px;
+  margin-inline: auto;
+  padding: clamp(3.5rem, 8vw, 6.5rem) clamp(1.8rem, 6vw, 5rem);
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 40px 100px -30px rgba(45, 30, 80, 0.2), 0 2px 0 rgba(255, 255, 255, 0.8) inset;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Rotating Circular Badge ──────────────────────────────── */
+.closing__badge-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 2rem;
+}
+
+.closing__badge-spin {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.closing__badge-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.closing__badge-text {
+  font-family: var(--font-sans);
+  font-size: 11.2px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  fill: var(--ink);
+  text-transform: uppercase;
+}
+
+.closing__badge-center {
+  position: relative;
+  z-index: 2;
+}
+
+.closing__seal {
+  width: 2.3em;
+  height: 2.3em;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 14px rgba(232, 85, 58, 0.18);
+}
+
+/* ── Editorial Header ─────────────────────────────────────── */
+.closing__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  max-width: 720px;
+}
+
+.closing__eyebrow {
+  margin-bottom: 0.2rem;
+}
+
+.closing__title {
+  color: var(--ink);
+  line-height: 1.18;
+}
+
+.closing__title-line {
+  display: inline-block;
+}
+
+.closing__prose {
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  line-height: 1.8;
+  color: var(--ink-2);
+  max-width: 48ch;
+  margin-inline: auto;
+}
+
+/* ── Seats Notice & Live Indicator ────────────────────────── */
+.closing__meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(31, 26, 46, 0.1);
+  box-shadow: 0 4px 16px rgba(31, 26, 46, 0.06);
+}
+
+.closing__pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--seal);
+  box-shadow: 0 0 0 0 rgba(232, 85, 58, 0.7);
+  animation: closingPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes closingPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(232, 85, 58, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(232, 85, 58, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 85, 58, 0);
+  }
+}
+
+.closing__sub {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+/* ── Prominent CTA ────────────────────────────────────────── */
+.closing__cta-wrap {
+  margin-top: 0.8rem;
+}
+
+.closing__cta {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  padding: 1.25em 2.4em;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 24px 50px -15px rgba(31, 26, 46, 0.55);
+}
+
+.closing__cta:hover {
+  box-shadow: 0 30px 65px -18px rgba(31, 26, 46, 0.65);
+}
+
+.closing__cta-text {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ── Trust Assurances ─────────────────────────────────────── */
+.closing__assurances {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem 0.8rem;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+  margin-top: 0.5rem;
+}
+
+.closing__assurance-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.closing__assurance-item svg {
+  color: var(--seal);
+}
+
+.closing__assurance-sep {
+  color: var(--ink-line);
+}
+
+/* ── Mobile Tuning ────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .closing__content {
+    padding: 3rem 1.4rem;
+  }
+  .closing__badge-wrap {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+  }
+  .closing__badge-text {
+    font-size: 9.8px;
+  }
+  .closing__assurances {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .closing__assurance-sep {
+    display: none;
+  }
+}

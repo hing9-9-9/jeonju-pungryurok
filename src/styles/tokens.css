@@ -1,0 +1,62 @@
+/* ─────────────────────────────────────────────────────────────
+   Design tokens — 전주 심야 풍류록
+   Pastel hanji paper · plum ink · seal-red accent
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Ink & paper */
+  --ink: #1f1a2e;
+  --ink-2: rgba(31, 26, 46, 0.72);
+  --ink-3: rgba(31, 26, 46, 0.48);
+  --ink-line: rgba(31, 26, 46, 0.14);
+  --paper: #fbf6ef;
+  --white: #ffffff;
+
+  /* Pastel palette */
+  --peach: #ffd3bf;
+  --apricot: #ffc29e;
+  --butter: #fff0b3;
+  --mint: #c6f0dc;
+  --jade: #bfe3d3;
+  --sky: #c6e0ff;
+  --lilac: #d9c8ff;
+  --rose: #ffcbe1;
+
+  /* Accent */
+  --seal: #e8553a;          /* 낙관(seal) red — use sparingly */
+  --seal-soft: #ff8a70;
+  --night: #2b2450;
+
+  /* Glass */
+  --glass: rgba(255, 255, 255, 0.42);
+  --glass-strong: rgba(255, 255, 255, 0.66);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-shadow: 0 30px 80px -30px rgba(60, 40, 90, 0.28), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
+  --blur: saturate(160%) blur(22px);
+
+  /* Typography */
+  --font-serif-kr: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+  --font-book: 'Gowun Batang', 'Noto Serif KR', 'Nanum Myeongjo', serif;
+  --font-display: 'Instrument Serif', 'Noto Serif KR', serif;
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  --fs-mega: clamp(3.4rem, 9.5vw, 10.5rem);
+  --fs-h1: clamp(2.6rem, 6vw, 6.2rem);
+  --fs-h2: clamp(2rem, 4.2vw, 4.2rem);
+  --fs-h3: clamp(1.35rem, 2vw, 1.9rem);
+  --fs-body: clamp(1rem, 1.05vw, 1.125rem);
+  --fs-small: 0.875rem;
+  --fs-micro: 0.72rem;
+
+  /* Layout */
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --maxw: 1440px;
+  --section-y: clamp(6rem, 14vw, 13rem);
+  --r-sm: 14px;
+  --r-md: 22px;
+  --r-lg: 34px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}

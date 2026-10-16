@@ -1,0 +1,108 @@
+/* ─────────────────────────────────────────────────────────────
+   Cursor.css — Custom desktop-only ink & frosted glass cursor
+   ───────────────────────────────────────────────────────────── */
+
+/* Disabled on touch / coarse devices */
+@media (hover: none), (pointer: coarse) {
+  .cursor-container {
+    display: none !important;
+  }
+}
+
+.cursor-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  transition: opacity 0.3s var(--ease-out);
+}
+
+/* Inner ink dot */
+.cursor-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background-color: var(--ink);
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: transform 0.2s var(--ease-out), opacity 0.25s var(--ease-out), background-color 0.25s;
+}
+
+.cursor-dot--hidden {
+  opacity: 0;
+  transform: scale(0.2);
+}
+
+/* Trailing frosted glass ring */
+.cursor-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  border-radius: 50%;
+  border: 1px solid rgba(31, 26, 46, 0.24);
+  background: rgba(255, 255, 255, 0.28);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 18px rgba(31, 26, 46, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, width, height;
+  transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out), margin 0.3s var(--ease-out),
+    background-color 0.3s var(--ease-out), border-color 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out), border-radius 0.3s var(--ease-out);
+}
+
+/* Hovering interactive links */
+.cursor-ring--hover {
+  width: 52px;
+  height: 52px;
+  margin-left: -26px;
+  margin-top: -26px;
+  background: rgba(255, 240, 179, 0.38); /* pastel butter tint */
+  border-color: rgba(232, 85, 58, 0.35); /* subtle seal tint */
+  box-shadow: 0 8px 24px rgba(232, 85, 58, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Expanded badge mode with text */
+.cursor-ring--badge {
+  width: 78px;
+  height: 78px;
+  margin-left: -39px;
+  margin-top: -39px;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(232, 85, 58, 0.5);
+  box-shadow: 0 14px 34px -6px rgba(43, 36, 80, 0.18), inset 0 1.5px 0 rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(180%);
+}
+
+.cursor-badge-text {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.cursor-badge-text--seal {
+  color: var(--seal);
+}

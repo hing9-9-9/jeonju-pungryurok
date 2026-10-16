@@ -1,0 +1,812 @@
+/* ─────────────────────────────────────────────────────────────
+   BookingModal — 전주 심야 풍류록
+   Frosted glass sliding reservation drawer & commemorative ticket receipt
+   ───────────────────────────────────────────────────────────── */
+
+.booking-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: auto;
+}
+
+/* ── Backdrop Blur Overlay ────────────────────────────────── */
+.booking-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 26, 46, 0.52);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  z-index: 1001;
+  cursor: pointer;
+}
+
+/* ── Sliding Drawer Sheet ─────────────────────────────────── */
+.booking-modal__drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(580px, 100vw);
+  background: rgba(253, 249, 244, 0.96);
+  -webkit-backdrop-filter: saturate(180%) blur(26px);
+  backdrop-filter: saturate(180%) blur(26px);
+  border-left: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: -20px 0 60px -15px rgba(31, 26, 46, 0.35);
+  z-index: 1002;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .booking-modal {
+    align-items: flex-end;
+  }
+  .booking-modal__drawer {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    max-height: 92vh;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.9);
+    border-top-left-radius: var(--r-lg);
+    border-top-right-radius: var(--r-lg);
+    box-shadow: 0 -20px 60px -15px rgba(31, 26, 46, 0.35);
+  }
+}
+
+/* ── Sheet Header ─────────────────────────────────────────── */
+.booking-modal__header {
+  padding: 1.6rem 2rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(31, 26, 46, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}
+
+.booking-modal__header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.booking-modal__eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--seal);
+}
+
+.booking-modal__title {
+  font-family: var(--font-serif-kr);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.booking-modal__close-btn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(31, 26, 46, 0.06);
+  color: var(--ink);
+  cursor: pointer;
+  border: none;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.booking-modal__close-btn:hover {
+  background: rgba(232, 85, 58, 0.12);
+  color: var(--seal);
+  transform: rotate(90deg);
+}
+
+/* ── Scrollable Body Area ─────────────────────────────────── */
+.booking-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overscroll-behavior: contain;
+}
+
+/* ── Form View ────────────────────────────────────────────── */
+.booking-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+}
+
+.booking-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.booking-modal__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.booking-modal__label {
+  font-family: var(--font-serif-kr);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+
+.booking-modal__req {
+  color: var(--seal);
+  margin-left: 2px;
+}
+
+.booking-modal__label-hint {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+
+.booking-modal__sublabel {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* ── Step 1: Tier Selector Radio Cards ────────────────────── */
+.booking-modal__tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.booking-modal__tier-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(31, 26, 46, 0.1);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+}
+
+.booking-modal__tier-card:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(31, 26, 46, 0.25);
+}
+
+.booking-modal__tier-card--selected {
+  background: rgba(255, 245, 240, 0.95);
+  border-color: var(--seal);
+  box-shadow: 0 4px 18px rgba(232, 85, 58, 0.12);
+}
+
+.booking-modal__tier-radio {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(31, 26, 46, 0.25);
+  flex-shrink: 0;
+}
+
+.booking-modal__tier-card--selected .booking-modal__tier-radio {
+  border-color: var(--seal);
+}
+
+.booking-modal__radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--seal);
+  transform: scale(0);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.booking-modal__radio-dot--checked {
+  transform: scale(1);
+}
+
+.booking-modal__tier-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex-grow: 1;
+}
+
+.booking-modal__tier-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.booking-modal__tier-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--seal);
+  text-transform: uppercase;
+}
+
+.booking-modal__featured-pill {
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--r-pill);
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--seal);
+  color: var(--white);
+}
+
+.booking-modal__tier-name {
+  font-family: var(--font-serif-kr);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.booking-modal__tier-price {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* ── Step 2: Date Selector ────────────────────────────────── */
+.booking-modal__dates-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+@media (min-width: 500px) {
+  .booking-modal__dates-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.booking-modal__date-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(31, 26, 46, 0.1);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+}
+
+.booking-modal__date-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(31, 26, 46, 0.25);
+}
+
+.booking-modal__date-btn--selected {
+  background: rgba(255, 245, 240, 0.95);
+  border-color: var(--seal);
+  box-shadow: 0 4px 14px rgba(232, 85, 58, 0.1);
+}
+
+.booking-modal__date-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.booking-modal__seat-badge {
+  display: inline-flex;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--r-pill);
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(31, 26, 46, 0.08);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.booking-modal__seat-badge--urgent {
+  background: rgba(232, 85, 58, 0.12);
+  color: var(--seal);
+  font-weight: 700;
+}
+
+/* ── Step 3: Stepper & Perk Discount ──────────────────────── */
+.booking-modal__stepper-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.booking-modal__stepper {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(31, 26, 46, 0.12);
+  padding: 0.3rem 0.5rem;
+  width: fit-content;
+}
+
+.booking-modal__stepper-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(31, 26, 46, 0.05);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.booking-modal__stepper-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.booking-modal__stepper-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.booking-modal__stepper-val {
+  padding: 0 1.2rem;
+  font-family: var(--font-serif-kr);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.booking-modal__perk-active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--r-sm);
+  background: rgba(232, 85, 58, 0.1);
+  border: 1px dashed var(--seal);
+  color: var(--seal);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.booking-modal__perk-sparkle {
+  font-size: 1rem;
+}
+
+.booking-modal__perk-hint {
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+/* ── Step 4: Contact Fields ───────────────────────────────── */
+.booking-modal__fields-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 500px) {
+  .booking-modal__fields-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.booking-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.booking-modal__field--full {
+  grid-column: 1 / -1;
+}
+
+.booking-modal__input {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(31, 26, 46, 0.12);
+  color: var(--ink);
+  font-size: 0.92rem;
+  transition: all 0.25s;
+}
+
+.booking-modal__input:focus {
+  outline: none;
+  background: var(--white);
+  border-color: var(--seal);
+  box-shadow: 0 0 0 3px rgba(232, 85, 58, 0.12);
+}
+
+.booking-modal__input--error {
+  border-color: var(--seal);
+  background: rgba(255, 240, 240, 0.7);
+}
+
+.booking-modal__error-msg {
+  font-size: 0.75rem;
+  color: var(--seal);
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.booking-modal__select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.booking-modal__select {
+  width: 100%;
+  padding: 0.85rem 2.2rem 0.85rem 1.1rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(31, 26, 46, 0.12);
+  color: var(--ink);
+  font-size: 0.92rem;
+  cursor: pointer;
+  appearance: none;
+  transition: all 0.25s;
+}
+
+.booking-modal__select:focus {
+  outline: none;
+  border-color: var(--seal);
+  box-shadow: 0 0 0 3px rgba(232, 85, 58, 0.12);
+}
+
+.booking-modal__select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 1.1rem;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.booking-modal__subfield {
+  margin-top: 0.6rem;
+}
+
+/* ── Step 5: Options Checkboxes ───────────────────────────── */
+.booking-modal__checks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.booking-modal__checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(31, 26, 46, 0.08);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.booking-modal__checkbox-row:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.booking-modal__checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 0.2rem;
+  accent-color: var(--seal);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.booking-modal__checkbox-text {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.booking-modal__checkbox-text strong {
+  color: var(--ink);
+}
+
+/* ── Real-time Total Calculation Breakdown ────────────────── */
+.booking-modal__summary-box {
+  padding: 1.4rem 1.6rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(31, 26, 46, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.booking-modal__summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+
+.booking-modal__summary-row--discount {
+  color: var(--seal);
+  font-weight: 600;
+}
+
+.booking-modal__summary-divider {
+  height: 1px;
+  background: rgba(31, 26, 46, 0.08);
+  margin-block: 0.2rem;
+}
+
+.booking-modal__summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.booking-modal__total-label {
+  font-family: var(--font-serif-kr);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.booking-modal__total-price {
+  font-size: 1.85rem;
+  color: var(--seal);
+  line-height: 1;
+}
+
+.booking-modal__total-note {
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--ink-3);
+  margin-top: 0.2rem;
+}
+
+/* ── Submit CTA ───────────────────────────────────────────── */
+.booking-modal__submit-wrap {
+  position: sticky;
+  bottom: 0;
+  padding-top: 0.5rem;
+  background: linear-gradient(0deg, rgba(253, 249, 244, 0.98) 70%, transparent 100%);
+}
+
+.booking-modal__submit-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 1.15em 1.5em;
+  font-size: 1.05rem;
+}
+
+/* ── RECEIPT VIEW (COMMEMORATIVE TICKET) ──────────────────── */
+.booking-modal__receipt {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  align-items: center;
+}
+
+.booking-modal__ticket-stub {
+  position: relative;
+  width: 100%;
+  padding: 2.4rem 2rem;
+  border-radius: var(--r-md);
+  background: #fffdf9;
+  border: 2px dashed rgba(31, 26, 46, 0.22);
+  box-shadow: 0 16px 40px -12px rgba(60, 40, 90, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  overflow: hidden;
+}
+
+/* Dramatic Animated Red Korean Seal Stamp */
+.booking-modal__seal-stamp {
+  position: absolute;
+  top: 1.8rem;
+  right: 1.8rem;
+  width: 72px;
+  height: 72px;
+  border: 3px solid var(--seal);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 16px rgba(232, 85, 58, 0.25);
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.booking-modal__seal-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.booking-modal__seal-text {
+  font-family: var(--font-serif-kr);
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--seal);
+  letter-spacing: 0.1em;
+}
+
+.booking-modal__seal-sub {
+  font-family: var(--font-serif-kr);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--seal);
+}
+
+.booking-modal__receipt-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-right: 80px;
+}
+
+.booking-modal__receipt-brand {
+  font-size: 1.15rem;
+  color: var(--seal);
+  letter-spacing: 0.1em;
+}
+
+.booking-modal__receipt-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+.booking-modal__receipt-no {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+.booking-modal__receipt-divider {
+  height: 1px;
+  border-top: 1.5px dashed rgba(31, 26, 46, 0.15);
+}
+
+.booking-modal__receipt-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.booking-modal__receipt-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+
+.booking-modal__receipt-key {
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.booking-modal__receipt-val {
+  font-weight: 600;
+  color: var(--ink);
+  text-align: right;
+}
+
+.booking-modal__receipt-row--total {
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(31, 26, 46, 0.08);
+  align-items: baseline;
+}
+
+.booking-modal__receipt-row--total .booking-modal__receipt-val {
+  font-size: 1.6rem;
+  color: var(--seal);
+}
+
+.booking-modal__receipt-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1rem 1.15rem;
+  border-radius: var(--r-sm);
+  background: rgba(31, 26, 46, 0.04);
+}
+
+.booking-modal__receipt-notice-lead {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.booking-modal__receipt-notice-sub {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.booking-modal__receipt-notice-kakao {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--seal);
+  margin-top: 0.2rem;
+}
+
+.booking-modal__receipt-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.booking-modal__done-btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.booking-modal__again-btn {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-align: center;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.booking-modal__again-btn:hover {
+  color: var(--seal);
+}
+
+/* ── Mobile Tuning ────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .booking-modal__header {
+    padding: 1.25rem 1.4rem;
+  }
+  .booking-modal__body {
+    padding: 1.4rem;
+    gap: 1.5rem;
+  }
+  .booking-modal__ticket-stub {
+    padding: 1.8rem 1.3rem;
+  }
+  .booking-modal__seal-stamp {
+    top: 1.2rem;
+    right: 1.2rem;
+    width: 60px;
+    height: 60px;
+  }
+  .booking-modal__seal-text {
+    font-size: 1.2rem;
+  }
+  .booking-modal__receipt-header {
+    padding-right: 65px;
+  }
+}
