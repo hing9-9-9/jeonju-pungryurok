@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { zine } from '../content.js'
 import { Reveal, SplitLines, Arrow, EASE } from './motion.jsx'
 import { useBooking } from '../booking.jsx'
+import { assetUrl } from '../assetUrl.js'
 import './Zine.css'
 
 // Default sample data for interactive fill-in-the-blanks
@@ -238,7 +239,7 @@ export default function Zine() {
               <div className="zine__washi-tape zine__washi-tape--top-center" />
               <div className="zine__polaroid-img-wrap">
                 <img
-                  src="/images/zine-table.jpg"
+                  src={assetUrl('images/zine-table.jpg')}
                   alt="에이커북스토어 집필 테이블"
                   loading="lazy"
                   width="180"
@@ -256,7 +257,7 @@ export default function Zine() {
               <div className="zine__washi-tape zine__washi-tape--mint" />
               <div className="zine__polaroid-img-wrap">
                 <img
-                  src="/images/woodblock.jpg"
+                  src={assetUrl('images/woodblock.jpg')}
                   alt="완판본 목판 인출"
                   loading="lazy"
                   width="150"
@@ -674,7 +675,7 @@ function ProloguePanel({ fields, updateField }) {
           <div className="zine-prologue__photo-inner">
             <div className="zine-prologue__photo-preview">
               <img
-                src="/images/hanbok-detail.jpg"
+                src={assetUrl('images/hanbok-detail.jpg')}
                 alt="골든아워 집필하는 여행자 스냅"
                 loading="lazy"
                 width="140"
@@ -1039,7 +1040,7 @@ function Chapter3NightPanel() {
         <div className="zine-ch3__bookstore-photo">
           <div className="zine__washi-tape zine__washi-tape--top-center" />
           <img
-            src="/images/bookstore-night.jpg"
+            src={assetUrl('images/bookstore-night.jpg')}
             alt="영업 종료 후 심야 책방 풍경"
             loading="lazy"
             width="220"

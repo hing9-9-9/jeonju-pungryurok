@@ -3,6 +3,8 @@
 //  (기획 대화 마지막 턴 기반: 19시 이후 심야 서점, 저녁 다이닝 격상, 한복 옵션)
 // ─────────────────────────────────────────────────────────────
 
+import { assetUrl } from './assetUrl.js'
+
 export const brand = {
   nameKo: '전주 심야 풍류록',
   nameHanja: '全州 深夜 風流錄',
@@ -90,7 +92,7 @@ export const course = {
       desc: '먹색·생성색·옥색의 차분한 생활한복으로 갈아입습니다. (Tier 3 선택자 한정 · 미선택자는 15:30 완판본문화관 직행)',
       photo: '단아한 무채색 한복 착장',
       optional: true,
-      image: '/images/hanbok-detail.jpg',
+      image: assetUrl('images/hanbok-detail.jpg'),
       tone: 'jade',
     },
     {
@@ -101,7 +103,7 @@ export const course = {
       title: '기록의 뿌리를 걷다',
       desc: '완판본 관람과 오후 햇살 속 골목 산책. 오후 4~5시 골든아워에 야외 스냅을 남깁니다.',
       photo: '한옥 담장, 긴 그림자, 책을 든 모습',
-      image: '/images/woodblock.jpg',
+      image: assetUrl('images/woodblock.jpg'),
       tone: 'butter',
     },
     {
@@ -112,7 +114,7 @@ export const course = {
       title: '노을 속 산책',
       desc: '동문거리로 천천히 걸으며 해 질 녘 노을을 감상합니다.',
       photo: '동문길의 빈티지한 거리 풍경',
-      image: '/images/hero-alley.jpg',
+      image: assetUrl('images/hero-alley.jpg'),
       tone: 'apricot',
     },
     {
@@ -123,7 +125,7 @@ export const course = {
       title: '풍류 다이닝',
       desc: '삼양다방 시그니처 한식 디너 코스와 전통주 3종 페어링, 그리고 사장님의 풍류 스토리텔링. 찍은 사진은 그 자리에서 바로 인화됩니다.',
       photo: '주안상 플레이팅, 술잔을 기울이는 순간',
-      image: '/images/dabang-dinner.jpg',
+      image: assetUrl('images/dabang-dinner.jpg'),
       tone: 'rose',
     },
     {
@@ -134,7 +136,7 @@ export const course = {
       title: '밤공기를 걷다',
       desc: '기분 좋은 취기를 안고 어스름한 전라감영길을 지나 서점으로. 제휴 한복은 책방에서 일괄 수거합니다.',
       photo: '어스름한 전라감영길 야경',
-      image: '/images/zine-table.jpg',
+      image: assetUrl('images/zine-table.jpg'),
       tone: 'sky',
     },
     {
@@ -145,7 +147,7 @@ export const course = {
       title: '심야 책방 Zine 제작소',
       desc: '문 닫은 서점에서 아코디언 북을 집필합니다. 인화된 사진을 붙이고, 한 페이지씩 낭독하며 여운을 나눕니다.',
       photo: '서가 사이에서 집필하는 ‘밤의 작가’',
-      image: '/images/bookstore-night.jpg',
+      image: assetUrl('images/bookstore-night.jpg'),
       tone: 'lilac',
     },
   ],

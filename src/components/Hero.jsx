@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { hero, brand } from '../content.js'
 import { useBooking } from '../booking.jsx'
 import { SplitLines, Reveal, Arrow, EASE } from './motion.jsx'
+import { assetUrl } from '../assetUrl.js'
 import './Hero.css'
 
 export default function Hero() {
@@ -122,7 +123,7 @@ export default function Hero() {
             <Reveal delay={0.25} y={40} className="hero__arch-frame">
               <div className="hero__arch-inner" data-cursor="동문길">
                 <motion.img
-                  src="/images/hero-alley.jpg"
+                  src={assetUrl('images/hero-alley.jpg')}
                   alt="해 질 녘 전주 동문길 골목 산책 풍경"
                   className="hero__arch-img"
                   style={{ y: archParallax }}

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { hanbok } from '../content.js'
 import { Reveal, SplitLines, Arrow, EASE } from './motion.jsx'
 import { useBooking } from '../booking.jsx'
+import { assetUrl } from '../assetUrl.js'
 import './Hanbok.css'
 
 const SWATCH_DETAILS = {
@@ -52,7 +53,7 @@ export default function Hanbok() {
                 {/* Main Photo */}
                 <div className="hanbok__photo-wrap">
                   <img
-                    src="/images/hanbok-detail.jpg"
+                    src={assetUrl('images/hanbok-detail.jpg')}
                     alt="단아한 먹색과 옥색 톤의 전주 모던 문인 한복 디테일"
                     loading="lazy"
                   />
