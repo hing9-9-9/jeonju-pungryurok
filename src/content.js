@@ -231,7 +231,7 @@ export const zine = {
 // 티켓 (3단계)
 export const tickets = {
   eyebrow: 'Tickets',
-  title: '어중간한 강의가 아니라, 확실한 대접',
+  title: '어떤 속도와 시선으로 오늘 밤을 기록하고 싶으신가요?',
   body: '본격 한식 디너와 서점 심야 대관이 포함된 프리미엄 다이닝 & 프라이빗 살롱 패키지입니다.',
   tiers: [
     {

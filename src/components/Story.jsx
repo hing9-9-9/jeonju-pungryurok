@@ -117,8 +117,8 @@ function PillarCard({ pillar, index }) {
 }
 
 export default function Story() {
-  const firstTitleLine = story.title[0] || '화려한 분장이 아니라,'
-  const secondTitleLine = story.title[1] || '기록하는 사람이 되는 하루'
+  const firstTitleLine = story.title[0] || '수백 년 전 출판의 도시 전주에서,'
+  const secondTitleLine = story.title[1] || '오늘 당신은 어떤 문인이 되어볼까요?'
 
   return (
     <section id="story" className="section story" aria-labelledby="story-heading">
