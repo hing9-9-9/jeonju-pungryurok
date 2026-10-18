@@ -39,6 +39,27 @@ export default function Hanbok() {
     }
   }, [])
 
+  const [photoMode, setPhotoMode] = useState('boutique') // 'boutique' | 'fabric'
+
+  const photos = {
+    boutique: {
+      src: assetUrl('images/dongmungil/IMG_7777.JPG'),
+      alt: '전주 동문길 귀족의상실 앞 아치 거울 포토존과 한옥 기와 스냅',
+      caption: '제휴 한복점 · 귀족의상실 현장 스냅',
+      sub: '“그대를 기다리고 있었소” · 아치 거울 포토존',
+      seal: '貴族',
+    },
+    fabric: {
+      src: assetUrl('images/hanbok-detail.jpg'),
+      alt: '단아한 먹색과 옥색 톤의 전주 모던 문인 한복 원단 디테일',
+      caption: '전주 모던 문인 착장',
+      sub: '100% 모시 & 린넨 · 사전 큐레이션 협약',
+      seal: '文人',
+    },
+  }
+
+  const currentPhoto = photos[photoMode]
+
   return (
     <section id="hanbok" className="section hanbok" aria-labelledby="hanbok-heading">
       <div className="container hanbok__container">
@@ -50,11 +71,34 @@ export default function Hanbok() {
                 {/* Washi Tape Accent */}
                 <div className="hanbok__washi-tape" aria-hidden="true" />
 
+                {/* Photo Switcher Tabs */}
+                <div className="hanbok__photo-tabs" role="tablist" aria-label="한복 사진 선택">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={photoMode === 'boutique'}
+                    className={`hanbok__photo-tab ${photoMode === 'boutique' ? 'hanbok__photo-tab--active' : ''}`}
+                    onClick={() => setPhotoMode('boutique')}
+                  >
+                    귀족의상실 현장 스냅
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={photoMode === 'fabric'}
+                    className={`hanbok__photo-tab ${photoMode === 'fabric' ? 'hanbok__photo-tab--active' : ''}`}
+                    onClick={() => setPhotoMode('fabric')}
+                  >
+                    문인 원단 디테일
+                  </button>
+                </div>
+
                 {/* Main Photo */}
                 <div className="hanbok__photo-wrap">
                   <img
-                    src={assetUrl('images/hanbok-detail.jpg')}
-                    alt="단아한 먹색과 옥색 톤의 전주 모던 문인 한복 디테일"
+                    key={currentPhoto.src}
+                    src={currentPhoto.src}
+                    alt={currentPhoto.alt}
                     loading="lazy"
                   />
                 </div>
@@ -62,11 +106,11 @@ export default function Hanbok() {
                 {/* Frame Footer with seal stamp and caption */}
                 <div className="hanbok__frame-footer">
                   <div>
-                    <span className="hanbok__frame-caption">전주 모던 문인 착장</span>
-                    <span className="hanbok__frame-sub">100% 모시 & 린넨 · 사전 큐레이션 협약</span>
+                    <span className="hanbok__frame-caption">{currentPhoto.caption}</span>
+                    <span className="hanbok__frame-sub">{currentPhoto.sub}</span>
                   </div>
                   <span className="hanbok__seal-mark" aria-hidden="true">
-                    文人
+                    {currentPhoto.seal}
                   </span>
                 </div>
               </div>

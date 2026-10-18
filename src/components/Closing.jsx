@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { closing } from '../content.js'
 import { useBooking } from '../booking.jsx'
+import { assetUrl } from '../assetUrl.js'
 import { SplitLines, Reveal, Arrow, EASE } from './motion.jsx'
 import './Closing.css'
 
@@ -40,8 +41,15 @@ export default function Closing() {
 
   return (
     <section id="closing" className="section closing">
-      {/* Blurred Night Bookstore Ambient Glow Backdrop */}
+      {/* Blurred Night Bookstore Ambient Glow & Real Photo Backdrop */}
       <div className="closing__atmosphere" aria-hidden="true">
+        <img
+          src={assetUrl('images/bookstore/IMG_7791.JPG')}
+          alt=""
+          className="closing__bg-photo"
+          loading="lazy"
+        />
+        <div className="closing__bg-overlay" />
         <div className="closing__glow closing__glow--warm" />
         <div className="closing__glow closing__glow--lavender" />
         <div className="closing__glow closing__glow--rose" />

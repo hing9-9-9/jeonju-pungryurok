@@ -71,6 +71,42 @@
   pointer-events: none;
 }
 
+/* Photo Switcher Tabs */
+.hanbok__photo-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.hanbok__photo-tab {
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(31, 26, 46, 0.12);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+}
+
+.hanbok__photo-tab:hover {
+  background: #ffffff;
+  color: var(--ink);
+  border-color: rgba(31, 26, 46, 0.25);
+}
+
+.hanbok__photo-tab--active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+  box-shadow: 0 2px 8px rgba(31, 26, 46, 0.15);
+}
+
 /* Photo Container */
 .hanbok__photo-wrap {
   position: relative;

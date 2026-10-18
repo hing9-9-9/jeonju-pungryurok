@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { story } from '../content.js'
+import { story, localGallery } from '../content.js'
 import { Reveal, SplitLines, Arrow, EASE } from './motion.jsx'
 import './Story.css'
 
@@ -93,6 +93,14 @@ function PillarCard({ pillar, index }) {
           <span>{pillar.place}</span>
         </div>
       </div>
+
+      {/* Photo Thumbnail Preview */}
+      {pillar.image && (
+        <div className="story-card__thumb-wrap">
+          <img src={pillar.image} alt={pillar.title} className="story-card__thumb-img" loading="lazy" />
+          <span className="story-card__thumb-tag">현장 포토</span>
+        </div>
+      )}
 
       {/* Middle: Title & description */}
       <div className="story-card__body">
@@ -193,6 +201,36 @@ export default function Story() {
           {story.pillars.map((pillar, idx) => (
             <PillarCard key={pillar.no} pillar={pillar} index={idx} />
           ))}
+        </div>
+
+        {/* Local Archive: Dongmun-gil & Bookstore Real Field Photography */}
+        <div className="story__archive">
+          <header className="story__archive-header">
+            <div className="story__archive-titles">
+              <span className="eyebrow story__archive-eyebrow">The Local Archive</span>
+              <h3 className="story__archive-title">동문길과 심야 서점의 고요한 순간들</h3>
+            </div>
+            <p className="story__archive-lead">
+              화려한 연출 대신 전주 구도심의 돌길과 헌책방, 1952년 다방의 창가와 심야 서가의 숨결을 직접 기록했습니다.
+            </p>
+          </header>
+
+          <div className="story__archive-grid">
+            {localGallery.map((item, idx) => (
+              <Reveal key={item.id} delay={0.06 * idx} y={24}>
+                <figure className={`story-archive-card story-archive-card--${item.aspect}`}>
+                  <div className="story-archive-card__img-box">
+                    <img src={item.src} alt={item.title} loading="lazy" />
+                    <span className="story-archive-card__tag">{item.tag}</span>
+                  </div>
+                  <figcaption className="story-archive-card__caption">
+                    <h4 className="story-archive-card__title">{item.title}</h4>
+                    <p className="story-archive-card__desc">{item.desc}</p>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
